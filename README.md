@@ -7,6 +7,8 @@ We gratefully acknowledge their provision of EDA tools and technologies used in 
 Any indicators of correlation or performance presented herein are **not** and should **not** be construed as benchmarking 
 of any commercial EDA tool, product, or vendor. Results are provided solely to enable reproducible academic research.
 
+If you use Au-MEDAL in any published work, we would greatly appreciate it if you could cite this paper [1].
+
 
 ## Overall Framework
 
@@ -34,7 +36,7 @@ For DP-Placer (Optional)
 
 `cmake 3.18.0`
 
-2. Build DP-based placement from *AutoCellGen* [\[1\]](https://github.com/The-OpenROAD-Project/AutoCellGen). (Optional)
+2. Build DP-based placement from *AutoCellGen* [\[2\]](https://github.com/The-OpenROAD-Project/AutoCellGen). (Optional)
 
 **If you need the placement engine, please make sure to read the README file in the DP-Placer directory and follow the build instructions without Z3.**
 
@@ -81,7 +83,7 @@ to generate all cells.
   - placement.txt: Specifies the ordering of PFETs and NFETs, as well as the number of fins. It is used to calculate actual coordinates based on the M1 pitch and contacted poly pitch defined in config.json.
 
 The placement.txt format is identical to the output format of DP-Placer.
-We adopted this format because Au-MEDAL was initially developed using the placement output of *AutoCellGen* \[1\] 
+We adopted this format because Au-MEDAL was initially developed using the placement output of *AutoCellGen* \[2\] 
 , which was the most recent open-source transistor placer at the time.
 We plan to support a more general format in the future.
 
@@ -142,7 +144,7 @@ This code supports running LVS, DRC, and PEX using Calibre from Mentor Graphics,
 Due to licensing restrictions from Mentor Graphics, all rule-related contents for Calibre have been removed. To perform LVS/DRC/PEX on your own, please consider requesting the necessary rule files from the official source.
 
 The *Cadence Abstract* flow was performed entirely through the GUI without the use of scripts.<br>
-The Synopsys IP rights noted in the headers of Synopsys-related .tcl files have been adapted from examples found in [\[2\]](https://github.com/ABKGroup/PROBE3.0)
+The Synopsys IP rights noted in the headers of Synopsys-related .tcl files have been adapted from examples found in [\[3\]](https://github.com/ABKGroup/PROBE3.0)
 
 ## Abstract Extraction (Cadence)
 
@@ -172,7 +174,7 @@ The script `utils/metric.py` performs cell-level analysis based on LEF and GDS i
 
 ASAP7 allows off-grid routing for LISD, LIG, and M1–M3 layers due to its single patterning EUV process. Based on this, our evaluation includes the following considerations:
 
-ASAP7 allows off-grid routing for LISD, LIG, and M1–M3 layers due to its single patterning EUV process *ASAP7_manual_pdf* [\[3\]](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf). Based on this, the following conditions are applied to our block-level evaluation:
+ASAP7 allows off-grid routing for LISD, LIG, and M1–M3 layers due to its single patterning EUV process *ASAP7_manual_pdf* [\[4\]](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf). Based on this, the following conditions are applied to our block-level evaluation:
 
 1. Off-grid design rule violations on M1–M3 layers are ignored in all baseline block-level designs. According to the ASAP7 reference DRC manual and Calibre DRC rule files, off-grid constraints apply to M4–M5 layers, but not to M1–M3.
 
@@ -187,6 +189,8 @@ This script takes a LEF file and a GDS file as input, and extends the pins to th
 The Results directory was produced by taking the ASAP Reference placement results, running routing with our flow, and completing pin extension. You can use the provided database to run and validate the metrics.
 
 ## References
-\[1\] AutoCellGen (Original code of DP-Placer) \[[GitHub](https://github.com/The-OpenROAD-Project/AutoCellGen)\]<br>
-\[2\] PROBE3.0 \[[Github](https://github.com/ABKGroup/PROBE3.0)\]<br>
-\[3\] ASAP7 Manual PDF \[[GitHub](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf)\]
+\[1\] A. B. Kahng, S. Kang, S. Kim, J. Lee and D. Yoon, "Au-MEDAL: Adaptable Grid Router with Metal Edge Detection And Layer Integration" in Proc. Asia and South Pacific Design Automation Conference (ASP-DAC) (2026). \[[link](http://vlsicad.ucsd.edu/Publications/Conferences/420/c420.pdf)\]<br>
+\[2\] AutoCellGen (Original code of DP-Placer) \[[GitHub](https://github.com/The-OpenROAD-Project/AutoCellGen)\]<br>
+\[3\] PROBE3.0 \[[Github](https://github.com/ABKGroup/PROBE3.0)\]<br>
+\[4\] ASAP7 Manual PDF \[[GitHub](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf)\]
+
