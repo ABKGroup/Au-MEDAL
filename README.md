@@ -190,7 +190,7 @@ This script takes a LEF file and a GDS file as input, and extends the pins to th
 The Results directory was produced by taking the ASAP Reference placement results, running routing with our flow, and completing pin extension. You can use the provided database to run and validate the metrics.
 
 ## References
-\[1\] A. B. Kahng, S. Kang, S. Kim, J. Lee and D. Yoon, "Au-MEDAL: Adaptable Grid Router with Metal Edge Detection And Layer Integration", to appear in Proc. Asia and South Pacific Design Automation Conference (ASP-DAC) (2026). \[[link](https://vlsicad.ucsd.edu/Publications/Conferences/420/c420.pdf)\]<br>
+\[1\] A. B. Kahng, S. Kang, S. Kim, J. Lee and D. Yoon, "Au-MEDAL: Adaptable Grid Router with Metal Edge Detection And Layer Integration", in Proc. Asia and South Pacific Design Automation Conference (ASP-DAC) (2026). \[[link](https://vlsicad.ucsd.edu/Publications/Conferences/420/c420.pdf)\]<br>
 \[2\] AutoCellGen (Original code of DP-Placer) \[[GitHub](https://github.com/The-OpenROAD-Project/AutoCellGen)\]<br>
 \[3\] PROBE3.0 \[[Github](https://github.com/ABKGroup/PROBE3.0)\]<br>
 \[4\] ASAP7 Manual PDF \[[GitHub](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf)\]
