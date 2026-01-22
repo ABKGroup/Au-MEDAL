@@ -1,0 +1,13 @@
+-------- Solution 1 --------
+[Column 1]
+NMOS : dummy(0) [dummy dummy dummy], PMOS : M6(3) [VDD A 5]
+[Column 2]
+NMOS : M1(3) [Y A VSS], PMOS : M6(3) [5 A VDD]
+[Column 3]
+NMOS : M1(2) [VSS A Y], PMOS : M6(3) [VDD A 5]
+[Column 4]
+NMOS : M3(2) [Y B VSS], PMOS : M9(3) [5 B Y]
+[Column 5]
+NMOS : M3(3) [VSS B Y], PMOS : M9(3) [Y B 5]
+[Column 6]
+NMOS : dummy(0) [dummy dummy dummy], PMOS : M9(3) [5 B Y]
