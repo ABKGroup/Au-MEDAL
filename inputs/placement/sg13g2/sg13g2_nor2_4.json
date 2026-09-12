@@ -1,0 +1,46 @@
+{
+  "cell": "sg13g2_nor2_4",
+  "width": 10,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "MX0", "fin": 740, "nets": ["VSS", "A", "Y"]},
+      "pmos": {"name": "MX1", "fin": 1120, "nets": ["net1", "A", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "MX0", "fin": 740, "nets": ["Y", "A", "VSS"]},
+      "pmos": {"name": "MX1", "fin": 1120, "nets": ["VDD", "A", "net1"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "MX0", "fin": 740, "nets": ["VSS", "A", "Y"]},
+      "pmos": {"name": "MX1", "fin": 1120, "nets": ["net1", "A", "VDD"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "MX0", "fin": 740, "nets": ["Y", "A", "VSS"]},
+      "pmos": {"name": "MX1", "fin": 1120, "nets": ["VDD", "A", "net1"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "MX3", "fin": 740, "nets": ["VSS", "B", "Y"]},
+      "pmos": {"name": "MX2", "fin": 1120, "nets": ["net1", "B", "Y"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "MX3", "fin": 740, "nets": ["Y", "B", "VSS"]},
+      "pmos": {"name": "MX2", "fin": 1120, "nets": ["Y", "B", "net1"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "MX3", "fin": 740, "nets": ["VSS", "B", "Y"]},
+      "pmos": {"name": "MX2", "fin": 1120, "nets": ["net1", "B", "Y"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "MX3", "fin": 740, "nets": ["Y", "B", "VSS"]},
+      "pmos": {"name": "MX2", "fin": 1120, "nets": ["Y", "B", "net1"]}
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "cell": "sg13g2_o31ai_2",
+  "width": 11,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["net1", "A1", "Y"]},
+      "pmos": {"name": "MP0", "fin": 1120, "nets": ["net2", "A1", "Y"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["Y", "A1", "net1"]},
+      "pmos": {"name": "MP0", "fin": 1120, "nets": ["Y", "A1", "net2"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "MN1", "fin": 740, "nets": ["net1", "A2", "Y"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["net2", "A2", "net3"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "MN1", "fin": 740, "nets": ["Y", "A2", "net1"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["net3", "A2", "net2"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "MN2", "fin": 740, "nets": ["net1", "A3", "Y"]},
+      "pmos": {"name": "MP2", "fin": 1120, "nets": ["VDD", "A3", "net3"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "MN2", "fin": 740, "nets": ["Y", "A3", "net1"]},
+      "pmos": {"name": "MP2", "fin": 1120, "nets": ["net3", "A3", "VDD"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "MN3", "fin": 740, "nets": ["net1", "B1", "VSS"]},
+      "pmos": {"name": "MP3", "fin": 1120, "nets": ["VDD", "B1", "Y"]}
+    },
+    {
+      "column": 9,
+      "nmos": {"name": "MN3", "fin": 740, "nets": ["VSS", "B1", "net1"]},
+      "pmos": {"name": "MP3", "fin": 1120, "nets": ["Y", "B1", "VDD"]}
+    }
+  ]
+}

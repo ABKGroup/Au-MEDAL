@@ -1,0 +1,41 @@
+{
+  "cell": "sg13g2_a21oi_2",
+  "width": 9,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "MMNB0", "fin": 740, "nets": ["VSS", "B1", "Y"]},
+      "pmos": {"name": "MMPB0", "fin": 1120, "nets": ["Y", "B1", "pndA"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "MMNB0", "fin": 740, "nets": ["Y", "B1", "VSS"]},
+      "pmos": {"name": "MMPB0", "fin": 1120, "nets": ["pndA", "B1", "Y"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "MMNA0", "fin": 740, "nets": ["sndA1", "A1", "Y"]},
+      "pmos": {"name": "MMPA0", "fin": 1120, "nets": ["VDD", "A1", "pndA"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "MMNA0", "fin": 740, "nets": ["Y", "A1", "sndA1"]},
+      "pmos": {"name": "MMPA0", "fin": 1120, "nets": ["pndA", "A1", "VDD"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "MMNA1", "fin": 740, "nets": ["sndA1", "A2", "VSS"]},
+      "pmos": {"name": "MMPA1", "fin": 1120, "nets": ["VDD", "A2", "pndA"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "MMNA1", "fin": 740, "nets": ["VSS", "A2", "sndA1"]},
+      "pmos": {"name": "MMPA1", "fin": 1120, "nets": ["pndA", "A2", "VDD"]}
+    }
+  ]
+}
