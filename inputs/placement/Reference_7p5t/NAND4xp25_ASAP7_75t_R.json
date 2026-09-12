@@ -1,0 +1,26 @@
+{
+  "cell": "NAND4xp25_ASAP7_75t_R",
+  "width": 4,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["VSS", "D", "8"]},
+      "pmos": {"name": "M4", "fin": 2, "nets": ["Y", "D", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["8", "C", "9"]},
+      "pmos": {"name": "M5", "fin": 2, "nets": ["VDD", "C", "Y"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["9", "B", "10"]},
+      "pmos": {"name": "M6", "fin": 2, "nets": ["Y", "B", "VDD"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["10", "A", "Y"]},
+      "pmos": {"name": "M7", "fin": 2, "nets": ["VDD", "A", "Y"]}
+    }
+  ]
+}

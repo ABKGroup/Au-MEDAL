@@ -1,0 +1,56 @@
+{
+  "cell": "OA333x1_ASAP7_75t_R",
+  "width": 10,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["Y", "3", "VSS"]},
+      "pmos": {"name": "M10", "fin": 3, "nets": ["Y", "3", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["VSS", "C3", "14"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["VDD", "C3", "16"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["14", "C2", "VSS"]},
+      "pmos": {"name": "M12", "fin": 3, "nets": ["16", "C2", "17"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["VSS", "C1", "14"]},
+      "pmos": {"name": "M13", "fin": 3, "nets": ["17", "C1", "3"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M4", "fin": 3, "nets": ["14", "B1", "15"]},
+      "pmos": {"name": "M14", "fin": 3, "nets": ["3", "B1", "18"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["15", "B2", "14"]},
+      "pmos": {"name": "M15", "fin": 3, "nets": ["18", "B2", "19"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "M6", "fin": 3, "nets": ["14", "B3", "15"]},
+      "pmos": {"name": "M16", "fin": 3, "nets": ["19", "B3", "VDD"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "M7", "fin": 3, "nets": ["15", "A3", "3"]},
+      "pmos": {"name": "M17", "fin": 3, "nets": ["VDD", "A3", "20"]}
+    },
+    {
+      "column": 9,
+      "nmos": {"name": "M8", "fin": 3, "nets": ["3", "A2", "15"]},
+      "pmos": {"name": "M18", "fin": 3, "nets": ["20", "A2", "21"]}
+    },
+    {
+      "column": 10,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["15", "A1", "3"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["21", "A1", "3"]}
+    }
+  ]
+}

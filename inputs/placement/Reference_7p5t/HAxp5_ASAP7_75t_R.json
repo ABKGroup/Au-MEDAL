@@ -1,0 +1,41 @@
+{
+  "cell": "HAxp5_ASAP7_75t_R",
+  "width": 7,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["VSS", "A", "8"]},
+      "pmos": {"name": "M5", "fin": 2, "nets": ["VDD", "A", "CON"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["8", "B", "CON"]},
+      "pmos": {"name": "M6", "fin": 2, "nets": ["CON", "B", "VDD"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["6", "B", "VSS"]},
+      "pmos": {"name": "M7", "fin": 3, "nets": ["SN", "B", "9"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["VSS", "A", "6"]},
+      "pmos": {"name": "M8", "fin": 3, "nets": ["9", "A", "VDD"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "M4", "fin": 3, "nets": ["6", "CON", "SN"]},
+      "pmos": {"name": "M9", "fin": 3, "nets": ["VDD", "CON", "SN"]}
+    }
+  ]
+}

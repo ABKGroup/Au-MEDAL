@@ -1,0 +1,11 @@
+{
+  "cell": "INVxp33_ASAP7_75t_R",
+  "width": 1,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 1, "nets": ["VSS", "A", "Y"]},
+      "pmos": {"name": "M1", "fin": 1, "nets": ["VDD", "A", "Y"]}
+    }
+  ]
+}

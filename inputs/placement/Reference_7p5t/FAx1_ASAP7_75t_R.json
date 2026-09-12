@@ -1,0 +1,66 @@
+{
+  "cell": "FAx1_ASAP7_75t_R",
+  "width": 12,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["7", "A", "VSS"]},
+      "pmos": {"name": "M12", "fin": 3, "nets": ["8", "A", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["VSS", "A", "12"]},
+      "pmos": {"name": "M13", "fin": 3, "nets": ["VDD", "A", "15"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["12", "B", "CON"]},
+      "pmos": {"name": "M14", "fin": 3, "nets": ["15", "B", "CON"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["CON", "CI", "7"]},
+      "pmos": {"name": "M15", "fin": 3, "nets": ["CON", "CI", "8"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M4", "fin": 3, "nets": ["7", "B", "VSS"]},
+      "pmos": {"name": "M16", "fin": 3, "nets": ["8", "B", "VDD"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["VSS", "B", "13"]},
+      "pmos": {"name": "M17", "fin": 3, "nets": ["VDD", "B", "16"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "M6", "fin": 3, "nets": ["13", "A", "14"]},
+      "pmos": {"name": "M18", "fin": 3, "nets": ["16", "A", "17"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "M7", "fin": 3, "nets": ["14", "CI", "SN"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["17", "CI", "SN"]}
+    },
+    {
+      "column": 9,
+      "nmos": {"name": "M8", "fin": 3, "nets": ["SN", "CON", "10"]},
+      "pmos": {"name": "M20", "fin": 3, "nets": ["SN", "CON", "11"]}
+    },
+    {
+      "column": 10,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["10", "CI", "VSS"]},
+      "pmos": {"name": "M21", "fin": 3, "nets": ["11", "CI", "VDD"]}
+    },
+    {
+      "column": 11,
+      "nmos": {"name": "M10", "fin": 3, "nets": ["VSS", "A", "10"]},
+      "pmos": {"name": "M22", "fin": 3, "nets": ["VDD", "A", "11"]}
+    },
+    {
+      "column": 12,
+      "nmos": {"name": "M11", "fin": 3, "nets": ["10", "B", "VSS"]},
+      "pmos": {"name": "M23", "fin": 3, "nets": ["11", "B", "VDD"]}
+    }
+  ]
+}

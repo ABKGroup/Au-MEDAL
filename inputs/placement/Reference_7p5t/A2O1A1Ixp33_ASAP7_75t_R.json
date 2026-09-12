@@ -1,0 +1,26 @@
+{
+  "cell": "A2O1A1Ixp33_ASAP7_75t_R",
+  "width": 4,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["7", "A1", "10"]},
+      "pmos": {"name": "M4", "fin": 3, "nets": ["8", "A1", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["10", "A2", "VSS"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["VDD", "A2", "8"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["VSS", "B", "7"]},
+      "pmos": {"name": "M6", "fin": 3, "nets": ["8", "B", "Y"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["7", "C", "Y"]},
+      "pmos": {"name": "M7", "fin": 2, "nets": ["Y", "C", "VDD"]}
+    }
+  ]
+}

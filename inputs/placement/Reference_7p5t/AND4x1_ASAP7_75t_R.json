@@ -1,0 +1,31 @@
+{
+  "cell": "AND4x1_ASAP7_75t_R",
+  "width": 5,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["7", "A", "9"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["VDD", "A", "7"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["9", "B", "10"]},
+      "pmos": {"name": "M6", "fin": 3, "nets": ["7", "B", "VDD"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["10", "C", "11"]},
+      "pmos": {"name": "M7", "fin": 3, "nets": ["VDD", "C", "7"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["11", "D", "VSS"]},
+      "pmos": {"name": "M8", "fin": 3, "nets": ["7", "D", "VDD"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M4", "fin": 3, "nets": ["VSS", "7", "Y"]},
+      "pmos": {"name": "M9", "fin": 3, "nets": ["VDD", "7", "Y"]}
+    }
+  ]
+}

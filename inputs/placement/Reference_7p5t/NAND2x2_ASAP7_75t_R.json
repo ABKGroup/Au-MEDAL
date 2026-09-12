@@ -1,0 +1,46 @@
+{
+  "cell": "NAND2x2_ASAP7_75t_R",
+  "width": 8,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M7", "fin": 3, "nets": ["5", "B", "Y"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M7", "fin": 3, "nets": ["Y", "B", "5"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["Y", "B", "VDD"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["5", "A", "VSS"]},
+      "pmos": {"name": "M10", "fin": 3, "nets": ["VDD", "A", "Y"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["VSS", "A", "5"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["5", "A", "VSS"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["VSS", "A", "5"]},
+      "pmos": {"name": "M10", "fin": 3, "nets": ["Y", "A", "VDD"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "M7", "fin": 3, "nets": ["5", "B", "Y"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["VDD", "B", "Y"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "M7", "fin": 3, "nets": ["Y", "B", "5"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "cell": "AOI32xp33_ASAP7_75t_R",
+  "width": 5,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["Y", "A1", "10"]},
+      "pmos": {"name": "M5", "fin": 2, "nets": ["VDD", "A1", "8"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["10", "A2", "11"]},
+      "pmos": {"name": "M6", "fin": 2, "nets": ["8", "A2", "VDD"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["11", "A3", "VSS"]},
+      "pmos": {"name": "M7", "fin": 2, "nets": ["VDD", "A3", "8"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 2, "nets": ["VSS", "B1", "12"]},
+      "pmos": {"name": "M8", "fin": 2, "nets": ["8", "B1", "Y"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M4", "fin": 2, "nets": ["12", "B2", "Y"]},
+      "pmos": {"name": "M9", "fin": 2, "nets": ["Y", "B2", "8"]}
+    }
+  ]
+}

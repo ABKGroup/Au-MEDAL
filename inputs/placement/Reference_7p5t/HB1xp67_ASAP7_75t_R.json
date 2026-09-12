@@ -1,0 +1,16 @@
+{
+  "cell": "HB1xp67_ASAP7_75t_R",
+  "width": 2,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 1, "nets": ["4", "A", "VSS"]},
+      "pmos": {"name": "M2", "fin": 1, "nets": ["4", "A", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 2, "nets": ["VSS", "4", "Y"]},
+      "pmos": {"name": "M3", "fin": 2, "nets": ["VDD", "4", "Y"]}
+    }
+  ]
+}

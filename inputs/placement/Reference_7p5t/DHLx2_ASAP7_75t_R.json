@@ -1,0 +1,76 @@
+{
+  "cell": "DHLx2_ASAP7_75t_R",
+  "width": 14,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 2, "nets": ["4", "CLK", "VSS"]},
+      "pmos": {"name": "M9", "fin": 2, "nets": ["4", "CLK", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 2, "nets": ["VSS", "4", "6"]},
+      "pmos": {"name": "M10", "fin": 2, "nets": ["VDD", "4", "6"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["VSS", "D", "10"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["VDD", "D", "13"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "M12", "fin": 3, "nets": ["13", "4", "8"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["10", "6", "8"]},
+      "pmos": {"name": "M13", "fin": 1, "nets": ["8", "6", "11"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "M4", "fin": 1, "nets": ["8", "4", "12"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 9,
+      "nmos": {"name": "M5", "fin": 1, "nets": ["12", "7", "VSS"]},
+      "pmos": {"name": "M14", "fin": 1, "nets": ["11", "7", "VDD"]}
+    },
+    {
+      "column": 10,
+      "nmos": {"name": "M6", "fin": 1, "nets": ["VSS", "8", "7"]},
+      "pmos": {"name": "M15", "fin": 1, "nets": ["VDD", "8", "7"]}
+    },
+    {
+      "column": 11,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 12,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 13,
+      "nmos": {"name": "M8", "fin": 3, "nets": ["VSS", "8", "Q"]},
+      "pmos": {"name": "M17", "fin": 3, "nets": ["VDD", "8", "Q"]}
+    },
+    {
+      "column": 14,
+      "nmos": {"name": "M8", "fin": 3, "nets": ["Q", "8", "VSS"]},
+      "pmos": {"name": "M17", "fin": 3, "nets": ["Q", "8", "VDD"]}
+    }
+  ]
+}

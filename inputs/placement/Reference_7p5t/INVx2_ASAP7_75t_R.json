@@ -1,0 +1,16 @@
+{
+  "cell": "INVx2_ASAP7_75t_R",
+  "width": 2,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["VSS", "A", "Y"]},
+      "pmos": {"name": "M3", "fin": 3, "nets": ["VDD", "A", "Y"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["Y", "A", "VSS"]},
+      "pmos": {"name": "M3", "fin": 3, "nets": ["Y", "A", "VDD"]}
+    }
+  ]
+}

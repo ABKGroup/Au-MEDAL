@@ -1,0 +1,36 @@
+{
+  "cell": "OAI321xp33_ASAP7_75t_R",
+  "width": 6,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["VSS", "A3", "9"]},
+      "pmos": {"name": "M6", "fin": 3, "nets": ["VDD", "A3", "12"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["9", "A2", "VSS"]},
+      "pmos": {"name": "M7", "fin": 3, "nets": ["12", "A2", "13"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["VSS", "A1", "9"]},
+      "pmos": {"name": "M8", "fin": 3, "nets": ["13", "A1", "Y"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 3, "nets": ["9", "C", "10"]},
+      "pmos": {"name": "M9", "fin": 2, "nets": ["Y", "C", "VDD"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M4", "fin": 3, "nets": ["10", "B1", "Y"]},
+      "pmos": {"name": "M10", "fin": 2, "nets": ["VDD", "B1", "14"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["Y", "B2", "10"]},
+      "pmos": {"name": "M11", "fin": 2, "nets": ["14", "B2", "Y"]}
+    }
+  ]
+}

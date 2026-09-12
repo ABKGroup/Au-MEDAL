@@ -1,0 +1,21 @@
+{
+  "cell": "INVx3_ASAP7_75t_R",
+  "width": 3,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["VSS", "A", "Y"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["VDD", "A", "Y"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["Y", "A", "VSS"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["Y", "A", "VDD"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["VSS", "A", "Y"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["VDD", "A", "Y"]}
+    }
+  ]
+}

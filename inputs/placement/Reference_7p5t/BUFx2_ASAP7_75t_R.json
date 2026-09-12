@@ -1,0 +1,21 @@
+{
+  "cell": "BUFx2_ASAP7_75t_R",
+  "width": 3,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 2, "nets": ["4", "A", "VSS"]},
+      "pmos": {"name": "M3", "fin": 2, "nets": ["4", "A", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["VSS", "4", "Y"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["VDD", "4", "Y"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 3, "nets": ["Y", "4", "VSS"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["Y", "4", "VDD"]}
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "cell": "NOR3xp33_ASAP7_75t_R",
+  "width": 3,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 2, "nets": ["Y", "A", "VSS"]},
+      "pmos": {"name": "M3", "fin": 3, "nets": ["Y", "A", "7"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 2, "nets": ["VSS", "B", "Y"]},
+      "pmos": {"name": "M4", "fin": 3, "nets": ["7", "B", "8"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 2, "nets": ["Y", "C", "VSS"]},
+      "pmos": {"name": "M5", "fin": 3, "nets": ["8", "C", "VDD"]}
+    }
+  ]
+}

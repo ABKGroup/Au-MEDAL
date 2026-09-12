@@ -1,196 +1,337 @@
 # Au-MEDAL: Adaptable Grid Router with Metal Edge Detection And Layer Integration
-Au-MEDAL is an SMT-based standard cell router that handles various design rules and specifications at the nanometer scale for bidirectional routing. It incorporates techniques such as metal edge detection, inter-layer design rule checking, off-grid design rule handling, flexible routing grid spacing, and pin accessibility–aware routing. These capabilities enable Au-MEDAL to generate DRC-clean layouts in ASAP7 and fully integrate middle-of-line (MOL) layers into the BEOL routing.
 
-This work was enabled by the generous academic support of *Cadence Design Systems*, *Synopsys*, and *Siemens EDA*. 
+Au-MEDAL is an SMT-based standard cell router that handles various design rules and specifications at the nanometer scale for bidirectional routing. It incorporates techniques such as metal edge detection, inter-layer design rule checking, off-grid-aware handling of pre-placed objects, flexible routing grid spacing, and pin accessibility-aware routing. These capabilities enable Au-MEDAL to generate DRC-clean layouts in ASAP7 and fully integrate middle-of-line (MOL) layers into the BEOL routing.
+
+This work was enabled by the generous academic support of *Cadence Design Systems*, *Synopsys*, and *Siemens EDA*.
 We gratefully acknowledge their provision of EDA tools and technologies used in this research.
 
-Any indicators of correlation or performance presented herein are **not** and should **not** be construed as benchmarking 
-of any commercial EDA tool, product, or vendor. Results are provided solely to enable reproducible academic research.
-
+Any indicators of correlation or performance presented herein are **not** and should **not** be construed as benchmarking of any commercial EDA tool, product, or vendor. Results are provided solely to enable reproducible academic research.
 
 If you use Au-MEDAL in any published work, we would greatly appreciate it if you could cite this paper [\[1\]](https://vlsicad.ucsd.edu/Publications/Conferences/420/c420.pdf).
+Reference citation: A. B. Kahng, S. Kang, S. Kim, J. Lee and D. Yoon, "Au-MEDAL: Adaptable Grid Router with Metal Edge Detection And Layer Integration", ASP-DAC 2026.
 
+## Environment Setup
 
-## Overall Framework
+Toolchain (verified):
 
-| <img src="framework.png" width=750px style="color:blue"> |
-| :-----------------------------------: |
-|            _Overall Flow_             |
+- g++ 8.5.0 or newer (C++17), cmake 3.15+
+- z3 C++ API ([Z3Prover/z3](https://github.com/Z3Prover/z3)): built automatically by
+  `./build.sh --with-z3`, or pass `-DZ3_ROOT=<dir with include/ and lib/>` for an
+  existing install.
 
-## HOW TO BUILD
-1. Our build Environments
+Build:
 
-For Au-MEDAL
+```bash
+./build.sh                # the router (build/flow), with an existing z3 (-DZ3_ROOT=<dir>)
+./build.sh --with-z3      # downloads and builds z3 into build/z3 first
+./build.sh --with-placer  # also builds the DP placer into build/dp_placer
+```
 
-`python 3.10`
+`--with-z3` needs a compiler recent enough for the pinned z3 tag (g++ 8.5 is too old,
+g++ 12 verified). Point `CXX` at one if needed: `CXX=/path/to/g++-12 ./build.sh --with-z3`.
 
-`pip 3.10`
+## Quick Start
 
-`anaconda v23.7.4`
+```bash
+build/flow --save_dir INVx1 --cell_name INVx1_ASAP7_75t_R \
+  --config inputs/configs/7p5t_3F3F_SP.json \
+  --placement_file inputs/placement/Reference_7p5t/INVx1_ASAP7_75t_R.json
+```
 
+Pre-generated placement JSONs for the full library are under `inputs/placement/`.
 
-For DP-Placer (Optional)
+### Optional: from CDL (`--with-placer`)
 
-`gcc 10.3.0`
+With the placer built, a cell goes from CDL netlist to routed GDS in two commands:
 
-`g++ 10.3.0`
+```bash
+build/dp_placer/placement -c INVx1_ASAP7_75t_R -i inputs/schematic/asap7sc7p5t.sp \
+  -d third_party/DP-placer/DATA/input/Au-MEDAL.style -o INVx1_placement
 
-`cmake 3.18.0`
+build/flow --save_dir INVx1 --cell_name INVx1_ASAP7_75t_R \
+  --config inputs/configs/7p5t_3F3F_SP.json \
+  --placement_file INVx1_placement/INVx1_ASAP7_75t_R_w3.json
+```
 
-2. Build DP-based placement from *AutoCellGen* [\[2\]](https://github.com/The-OpenROAD-Project/AutoCellGen). (Optional)
+The placer writes `<cell>_w<N>.json` per candidate width.
 
-**If you need the placement engine, please make sure to read the README file in the DP-Placer directory and follow the build instructions without Z3.**
+## CLI Reference (`build/flow`)
 
-You can follow the build instructions below. However, you may also use the provided placement file.
+Required arguments:
 
-`cd DP-placer/MAKE/PLACE/csyn_fp`
+- `--save_dir`: output directory root
+- `--cell_name`: target subckt/cell name
+- `--config`: config JSON path
+- `--placement_file`: routing input JSON path (routing-only)
 
-`mkdir build`
+Common arguments:
 
-`cd build`
+- `--no_cache`: re-route even when the output GDS already exists
+- `--log_file`: explicit log file path (default `<save_dir>/<cell>/run.log`)
 
-`cmake ..`
+`build/flow` is routing-only. Placement JSON comes from `build/dp_placer/placement`
+(see Quick Start) or from the pre-generated files under `inputs/placement/`.
 
-`make`
+## Input File Formats
 
-3. Build environments for Au-MEDAL using *anaconda3*
+### A) Routing Input JSON (`--placement_file`) [routing-only mode]
 
-`conda env create -f Environment.yml`
+In routing-only mode, placement JSON is required.
 
-`conda activate Au-MEDAL`
+Example (`inputs/placement/Reference_7p5t/INVx1_ASAP7_75t_R.json` style):
 
-## Execution Guide
-Au-MEDAL: Standard-Cell Layout Router
+```json
+{
+  "cell": "INVx1_ASAP7_75t_R",
+  "width": 1,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M0", "fin": 3, "nets": ["VSS", "A", "Y"]},
+      "pmos": {"name": "M1", "fin": 3, "nets": ["VDD", "A", "Y"]}
+    }
+  ]
+}
+```
 
-`python3 main.py --save_dir {save_dir} --cell_name {cell_name} --schematic {schematic} --config {config} --placement_file {placement_file}`
+Field definitions:
 
-For example, to run a single cell:
+- `cell`: target cell name.
+- `width`: number of placement columns.
+- `columns`: ordered transistor columns.
+- `column`: 1-based column index.
+- `nmos`, `pmos`: transistor objects.
+- `name`: transistor instance name.
+- `fin`: fin count.
+- `nets`: `[drain, gate, source]`.
 
-e.g.) `python3 main.py 
-                    --cell_name NAND2x2_ASAP7_75t_R 
-                    --schematic inputs/schematic/asap7sc7p5t.sp 
-                    --config inputs/configs/7p5t_3F3F_SP.json 
-                    --placement_file inputs/placement/Reference_7p5t/NAND2x2_ASAP7_75t_R.txt`
+### B) Schematic SPICE
 
-Or simply run:
+- SPICE netlist containing `.subckt` definitions: `inputs/schematic/asap7sc7p5t.sp`.
+- Used as the placer's CDL input, by the batch driver for the cell list, and by the Calibre
+  LVS check as the source netlist.
 
-`./run.sh`
+### C) Config JSON (`--config`)
 
-to generate all cells.
+Top-level keys used at runtime:
 
-- Input files
-  - config.json: Defines the layer map, design rules, and design parameters.
-  - schematic.sp: CMOS netlist.
-  - placement.txt: Specifies the ordering of PFETs and NFETs, as well as the number of fins. It is used to calculate actual coordinates based on the M1 pitch and contacted poly pitch defined in config.json.
+- `design_rules`
+- `design_specs`
+- `design_options`
 
-The placement.txt format is identical to the output format of DP-Placer.
-We adopted this format because Au-MEDAL was initially developed using the placement output of *AutoCellGen* [\[2\]](https://github.com/The-OpenROAD-Project/AutoCellGen)
-, which was the most recent open-source transistor placer at the time.
-We plan to support a more general format in the future.
+## Output Artifacts
 
-For user convenience, we provide a variety of config files used in our experiments.
+For `--save_dir <SAVE_DIR> --cell_name <CELL>`:
 
-- Configuration parameters in config json file
+- `<SAVE_DIR>/<CELL>/<CELL>.gds`: final GDS output.
+- `<SAVE_DIR>/<CELL>/run.log`: execution log.
+- `<SAVE_DIR>/<CELL>/<CELL>.smt2`: SMT2 model dump (only with `emit_debug_artifacts`).
+- `<SAVE_DIR>/<CELL>/ROUTING_UNSAT.txt`: created when no SAT solution is found.
 
-  - **layer_map** : Mapping each element into GDS layers
-  - **num_row** : The number of rows for multi-height cell. This feature is planned to be supported in the future.
-  - **x(y)\_routing resolution** : Resolution of routing grid. "design_rules["x_routing_resolution"][layer_index] = 2" means twice as dense x routing layer of layer_index.
-  - **metal_direction_priority** : This parameter determines which metal direction is prioritized during metal length optimization. If set to HORIZONTAL, horizontal metals are optimized first, followed by vertical metals. If set to BIDIRECTION, both directions are optimized simultaneously.
-  - **allow_below_min_track** : In general, Au-MEDAL adds horizontal routing tracks in two directions: from the top of the cell down to the cell center, and from the bottom of the cell up to the cell center. When the cell height is not an integer multiple of the metal track pitch, this can result in tracks near the cell center being spaced more closely than the minimum pitch of the metal layer. If this option is set to true, such violations of the minimum metal pitch are allowed.
-  - **addition_y_grid_for_pin** : Extension of Y grids to allocate pins.
-  - **low_resolution_routing** : This parameter restricts the creation of routing grids to only where they are needed. By default, the x-coordinates of routing tracks are determined by CPP/2, but instead of generating tracks at all possible locations, tracks are created only at points that need to be connected. Since this option can potentially cause spacing DRC violations, it is recommended to use it only when the cell size is large but the routing demand is low.
-  - **complexity_level** : When defining the routing grid, a parameter determines how finely the grid is generated. A higher value increases runtime, but can lead to better-quality solutions. Currently, only three values are supported: 0, 1, and 2.
-    - 0: If addition_y_grid_for_pin = true, a routing grid is added only in the y-direction for external pins. Specifically, for external pins on the M1 metal layer, y-direction routing tracks are added, while x- and z-direction tracks are not generated.
-    - 1: If addition_y_grid_for_pin = true, x-, y-, and z-direction tracks are added to the external pin metal layer in order to satisfy the pin length requirement. In addition, routing tracks are also added to the underlying layer of the external pin metal layer. For example, if the external pin layer is M1, routing tracks will also be added to the Gate layer. Since the pitch of LISD and M1 are different, additional routing tracks are inserted in LISD to avoid spacing design rule violations. (This behavior is specifically tuned for ASAP7, and users may remove it if desired. The corresponding code is in placeEnv.py, lines 614–622.)
-    - 2: Includes all of the behavior in mode 1, and additionally inserts routing tracks in the upper layer of the external pin metal layer. For example, if M1 is the external pin layer, routing tracks will also be added to M2.
-  - **ensure_access_points** : This parameter ensures at least one access point to the M2 metal layer. Enabling this option may increase runtime, so it is recommended to apply it only to cells where it is necessary.
-  - **pin_stretch_aware** : This parameter adjusts the optimization priority to allow external pins to extend as much as possible in the vertical direction When optimizing metal length, the priority is determined from the cell center toward the top and bottom of the cell. If this parameter is set to true, two effects can be achieved:
-    - The runtime is significantly reduced.  
-    - External pins generated at the cell center can later be extended as far as possible in the vertical direction.
-  - **max_tolerance** : A parameter that defines how much larger the routing region should be expanded beyond the routing bounding box.
-  - **power_layer** : Types of layers used for power
-  - **ext_pin_layer** : Types of layers used for pin
-  - **cell_height** : Cell height
-  - **minimum_pin_length** : Minimum pin length
-  - **diffusion_break** : 1 for SDB / 2 for DDB
-  - **extension** : Length of metal layer when it is in a fixed vertex.
-  - **spacing** : Minimum space rules, it has four type (S2S, S2T, T2T, C2C).
-  - **gate_contact_layer** : Type of layer used for gate contact
-  - **active_contact_layer** : Type of layer used for active contact
-  - **offset** : Defines the offset between two layers, specifying the required spacing or overlap between them.
-  - **width** : Minimum width of layer
-  - **min_side_len** : Minimum length of side
-  - **power_width** : Width of a power metal
-  - **min_area** : Minimum area of layer
-  - **enclosure** : Length of metal extension from via
-  - **no_overlap** : Layers that cannot be overlapped.
-  - **routing_layers** : Types of routing layers
-  - **routing_directions** : Routing directions of a layer. H for horizontal, V for vertical, B for Bidirectional.
-  - **vias** : Types of via
-  - **same_height_layers** : Layers that share the same layer and needed to be prevented from shorting.
-  - **lower_via** : Types of layers used for lower via
-  - **upper_via** : Types of layers used for upper via
-  - **num_max_pmos_fins** : Maximum number of PMOS fins
-  - **num_max_nmos_fins** : Maximum number of NMOS fins
+An existing GDS acts as the cache: rerunning the same cell skips the solve unless `--no_cache`
+is given (an existing `ROUTING_UNSAT.txt` also forces a re-solve).
 
-If it is difficult to understand what the above parameters describe, simply run the code first and refer to the "database/<CELL_NAME>/layer_track_info" directory.
+Example tree:
+
+```text
+INVx1/
+  INVx1_ASAP7_75t_R/
+    INVx1_ASAP7_75t_R.gds
+    run.log
+```
+
+## Configuration Reference
+
+Au-MEDAL config has two required top-level blocks plus an optional runtime-options block:
+
+- `design_rules` (required)
+- `design_specs` (required)
+- the runtime-options block, read from `design_specs.design_option` (also accepted at top-level
+  `design_options`). Optional. A missing block uses all defaults.
+
+All distance/width/spacing values are interpreted in `nm` units.
+
+### `design_rules` (technology rules)
+
+| Key | Type | Role | Tuning impact |
+| --- | --- | --- | --- |
+| `extension` | `layer -> nm` | Metal extension along the routing direction. | Larger helps tip legality, risks congestion. |
+| `max_tip_len` | `layer -> nm` | Threshold classifying short metal ends as tips. | Smaller means stricter tip checks. |
+| `min_area` | `layer -> nm^2` | Minimum polygon area per layer. | Higher suppresses tiny islands. |
+| `min_width` | `layer -> nm` | Minimum legal metal width. | Higher tightens legal geometry. |
+| `min_spacing` | nested (`S2S`,`S2T`,`T2T`,`C2C`) | Edge-type aware spacing rules. | Higher adds margin, harder routing. |
+| `min_enclosure` | `via -> layer -> nm` | Metal enclosure around via cuts. | Larger is safer, consumes area. |
+| `forbidden_layer_overlaps` | array | Same-height overlap bans. | Extra overlap restrictions. |
+| `contact_over_active_gate` | boolean | Allow contact over active gate. Read from `design_specs` first, then `design_rules` (default `false`). | `false` is the conservative choice. |
+
+### `design_specs` (stack and physical setup)
+
+| Key | Type | Role | Tuning impact |
+| --- | --- | --- | --- |
+| `layer_map` | `layer -> gds#` | Logical-to-GDS layer mapping. | Wrong map shifts output layers. |
+| `power_layer` | layer array | Power-rail layers. | Rail behavior, graph edge allowances. |
+| `ext_pin_layer` | layer array | External pin-access layers. | Where block-level access is expected. |
+| `cell_height` | nm | Standard-cell row height. | Vertical routing geometry. |
+| `gate_contact_layer` | string | Gate-contact layer name. | Must match the stack. |
+| `active_contact_layer` | string | Source/drain contact layer name. | Active-contact track injection. |
+| `power_width` | `layer -> nm` | Power-rail width per layer. | Wider rails, less free space. |
+| `routing_layers` | array of layer objects | Routing stack definition. | Search space, legal transitions. |
+| `vias` | array of via objects | Via connectivity between layers. | Missing entries break layer hops. |
+| `max_fins` | `pmos`/`nmos` | Fin count limits. | Stronger devices vs congestion. |
+| `diffusion_break` | number | Diffusion-break policy input. | Placement clustering style. |
+| `offset` | nested map | Inter-layer geometric offsets. | Misalignment causes systematic DRC. |
+| `routing_track_x_unit` | number or `"Nnm"` | Base X track unit. | Larger is faster, coarser. |
+| `routing_track_y_unit` | number or `"Nnm"` | Base Y track unit. | Smaller is finer, slower. |
+| `gds_database_unit_nm` | number, default `0.25` | GDS database unit (`0.25` = ASAP7). | Wrong value mis-scales the GDS. |
+
+### `design_option` (runtime behavior toggles)
+
+**Block location.** The C++ router reads this block from `design_specs.design_option` (singular,
+nested). For convenience the loader also accepts the block at top-level `design_options` (plural)
+and at `design_specs.design_options`, and merges them with the nested singular winning on conflict.
+A key placed in any of those locations now takes effect, so the keys below are honored regardless of
+which spelling a config uses.
+
+The keys the router reads:
+
+| Key | Type | Role | Tuning impact |
+| --- | --- | --- | --- |
+| `minimum_pin_length` | nm | Minimum external pin length. | Higher aids access, risks congestion. |
+| `add_hor_tracks_for_pin` | boolean | Two extra horizontal pin-access Y tracks. | Better hard-pin access, more runtime. |
+| `pin_tracks_on_lower_layers` | boolean | Pin-access tracks on lower layers. | Wider access, larger search. |
+| `pin_tracks_on_upper_layers` | boolean | Pin-access tracks on upper layers. | Wider access, larger search. |
+| `active_contact_tracks_from_pin_geometry` | boolean | Extra active-contact Y tracks from pin geometry. | Better access, more runtime. |
+| `pin_stretch_aware` | boolean | Pin-stretch-aware objective preference. | Boundary-pin quality vs wirelength. |
+| `metal_optimization_order` | `BIDIRECTION`/`VERTICAL`/`HORIZONTAL` | Objective direction priority per layer. | Biases congestion relief. |
+| `allow_below_min_track` | boolean | Loosen near-gate Y-track pruning. | May rescue hard cells, verify DRC. |
+| `low_resolution_routing` | boolean | Coarse fast search mode. | Faster runs, lower quality. |
+| `ensure_access_points` | boolean | Access-oriented masking of the metal set. | Better block-level access. |
+| `max_tolerance` | integer | Tolerance sweep upper bound. | Larger is more robust, slower. |
+| `tolerance_step` | integer `>0` | Tolerance sweep step (default 3). | Smaller is exhaustive, slower. |
+| `top_layer_candidates` | layer list | Top layers tried in order (default `["M1","M2"]`). | Restrict or extend the search. |
+| `top_layer` | string | Force one top layer (empty = off). | One deterministic stack. |
+| `pin_label_texttype` | integer | GDS TEXTTYPE for labels (default 251). | Match the PDK convention. |
+| `ext_pin_horizontal_edges` | boolean | Horizontal edges at ext-pin track points. | Access vs search size. |
+| `ext_pin_via_edges` | boolean | Via edges at ext-pin track points. | Reachability vs complexity. |
+| `enable_via_enc_blockage` | boolean | Via-enclosure spacing vs pre-placed polygons (default off). | Can over-constrain dense cells. |
+| `default_max_tip_len` | integer nm | Fallback `max_tip_len` (default 36). | Tip handling without a rule. |
+| `power_net_name` | string | Power-rail net name (default `VDD`). | Must match the placement nets. |
+| `ground_net_name` | string | Ground-rail net name (default `VSS`). | Must match the placement nets. |
+| `z3_threads` | integer | z3 threads (default 0 = z3 default), objective-preserving. | Faster hard cells. |
+| `pin_edge_lower_bound_cut` | boolean | Optimum-preserving lower-bound cut (default off). | Faster proof, same result. |
+| `pin_edge_lb_source_only` | boolean | The cut on the source pin only (default off). | Fewer added clauses. |
+| `emit_debug_artifacts` | boolean | Dump SMT2 to `<save_dir>/<cell>/<cell>.smt2` (default off). | Debug only. |
+| `log_level` | `DEBUG`/`INFO`/`WARNING`/`ERROR` | Verbosity (default `INFO`). Above `INFO` quiets `run.log`. | Raise for long batch runs. |
+
+### Runtime validation and derived values
+
+- Unknown keys inside the option block are ignored (not rejected), so a typo silently falls back to
+  the default. Check spelling against the table above.
+- Required top-level keys are `design_rules` and `design_specs` (the option block is optional, and a
+  missing block uses all defaults).
+- `routing_layers` and `vias` are required keys (a missing key throws at load). Each element
+  must be an object with the documented fields. An empty array is not rejected at load time
+  and only fails later in the flow.
+- Derived runtime fields include:
+  `pitch`, `x_unit`, `y_unit`, `x_offset`, `y_offset`, `np_offset`, `num_track`, plus normalized layer/via connectivity maps.
+
+## Batch Flow (`run.sh`)
+
+Route every `.subckt` in the schematic with per-cell config selection. Three known-unroutable
+cells (`DFFASRHQNx1_ASAP7_75t_R`, `SDFHx1_ASAP7_75t_R`, `SDFLx1_ASAP7_75t_R`) are skipped:
+
+```bash
+./run.sh
+```
+
+Environment overrides:
+
+- `TRACK`, `FIN`, `BASE_OPTION`
+- `SAVE_DIR` (default `gds_flow_<TRACK>_<BASE_OPTION>`)
+- `MAX_PROC` (parallel workers, default 16)
+- `NO_CACHE` (1 = re-route existing GDS)
+- `CELL_TIMEOUT` (per-cell solve timeout in seconds, default 10800; some cells
+  legitimately take well over an hour)
+- `CALIBRE_CHECK_DIR`: optional external LVS/DRC runner invoked per routed cell
+  (skipped when absent), results in `<SAVE_DIR>/calibre_summary.csv`.
+
+## Repository Layout
+
+- `src/`: the C++ router (`flow.cpp` is the `flow` CLI entrypoint, headers in
+  `src/include/`).
+- `CMakeLists.txt`, `build.sh`: build (produces `build/flow`).
+- `third_party/DP-placer`: the DP placement submodule
+  ([AutoCellGen](https://github.com/The-OpenROAD-Project/AutoCellGen) fork, pinned to the
+  paper-era commit). Fetch with `git submodule update --init`.
+- `run.sh`: multi-cell batch script with per-cell Calibre check.
+- `inputs/configs/`: configuration JSON files.
+- `inputs/schematic/`: SPICE netlists.
+- `inputs/placement/`: placement JSON files.
+- `utils/`: Python evaluation utilities: `run_evaluation.py` (subcommands `run`, `metric`,
+  `pin_extension`) and the `libgen/` SiliconSmart characterization flow (`run_libgen.py`).
+  Both need a Python environment with `gdspy`/`gdstk`.
+
+## Paper-to-Code Feature Mapping
+
+Main feature-to-function mapping (one main entry per feature):
+
+- Metal edge detection + edge-type aware spacing:
+  `src/smt.cpp` (`tip_helper`/`side_helper`/`corner_helper`) + `src/smt_spacing.cpp`
+  These build the geometric helper variables (tip/side/corner/via/direction) that the
+  edge-type-aware spacing constraints use for bidirectional routing.
+- Integrated MOL+BEOL routing over one stack:
+  `src/graph.cpp` -> `build_routing_graph()`
+  Builds one routing graph across the configured layer stack, so MOL and BEOL connectivity
+  are solved in a single routing model.
+- Variable routing-grid spacing and per-layer track generation:
+  `src/placement.cpp` -> `get_y_points()`
+  Generates layer-wise Y tracks using per-layer resolution and access-related options.
+- Pin accessibility constraints (minimum external pin length):
+  `src/smt_net.cpp` -> `SmtModel::add_minimum_pin_length()`
+  Adds SMT constraints forcing external-pin routes to meet the configured minimum pin length.
+- Pre-placed/fixed-object aware blockage handling in SMT:
+  `src/smt_net.cpp` -> `SmtModel::add_pre_layout_blockage()` (+ `src/prelayout_blockage.cpp`)
+  Queries pre-layout polygons and injects blocking constraints during solving.
+- Top-layer/tolerance search policy:
+  `src/solve.cpp` -> `solve_router()`
+  Drives the search loop over top-layer candidates and the tolerance sweep.
+
+(The equivalent Python entry points are preserved at tag `v1.0-python`.)
 
 ## Evaluation
 Design evaluation can be performed using the script `utils/run_evaluation.py`.
 
-This code supports running LVS, DRC, and PEX using Calibre from Mentor Graphics, and generating Liberty files using SiliconSmart from Synopsys. Additionally, it provides functionality to measure the area of a GDS file and to merge per-cell GDS layouts stored in subdirectories.
+This script supports multi-step evaluation utilities (e.g., Liberty generation, GDS merge, and metric collection) around generated cells.
 
-`python3 run_evaluation.py --save_dir {save_dir} --lib {True/False} --merge_gds {True/False} ...`
+`python3 utils/run_evaluation.py run --save_dir {save_dir} --lib {True/False} --merge_gds {True/False} ...`
 
-Due to licensing restrictions from Mentor Graphics, all rule-related contents for Calibre have been removed. To perform LVS/DRC/PEX on your own, please consider requesting the necessary rule files from the official source.
+## Metric Extraction
+The `metric` subcommand of `utils/run_evaluation.py` performs cell-level analysis based on LEF and GDS inputs. It extracts several layout-related metrics and summarizes them into a CSV file, including pin length, obstructive length, M2 wire length, and the number of vias.
 
-The *Cadence Abstract* flow was performed entirely through the GUI without the use of scripts.<br>
-The Synopsys IP rights noted in the headers of Synopsys-related .tcl files have been adapted from examples found in [\[3\]](https://github.com/ABKGroup/PROBE3.0)
+`python3 utils/run_evaluation.py metric --gds_path {gds_path} --lef_path {lef_path}`
 
-## Abstract Extraction (Cadence)
+## LEF Generation
 
-To generate the LEF file from GDS using the Cadence Abstract Generator, follow the steps below:
-
-1. In **Open Library**, select `cdslib/asap7_TechLib` from the ASAP7 PDK.
-2. In **Import Layout**, load the generated GDS file and use the layer map at `asap7_TechLib/asap7_TechLib.layermap`.
-3. In **Import Logical**, specify the Verilog netlist located at `Verilog/{logic.v}` within the ASAP7 PDK.
-4. In **Running step Pins** for the selected cell(s):
-   - Add the following to *Map text label to pins*:  
-     `"(M1 (M1 drawing)) (M2 (M2 drawing))"`
-   - Add any unrecognized pin names if necessary.
-   - Set the pin boundary layer to `"BOUNDARY"`.
-5. In **Running step Extract**, proceed with default settings.
-6. In **Running step Abstract**, set the site name to `"asap7sc7p5t"` and keep other settings as default.
-7. Go to **File > Export > LEF...** and run *Export Geometry LEF DATA* to generate the LEF file.
+To generate the LEF file from the routed GDS, use the KLayout-based flow at
+[ABKGroup/GDS-to-LEF](https://github.com/ABKGroup/GDS-to-LEF) (ASAP7 config included,
+no commercial EDA tool required).
 
 <!-- Due to licensing restrictions, we are unable to provide the *Calibre LVS/DRC/PEX* rule files. Kindly request them directly from the ASAP7 website. -->
 <!-- The evaluation includes the *Synopsys SiliconSmart* script. To ensure smooth use of *SiliconSmart*, please download the **7nm_TT.pm** file, the **reference .lib** file, and the **reference .cdl** (= ./asap7sc7p5t.sp) file from the publicly available ASAP7 repository. -->
 
-## Metric Extraction
-The script `utils/metric.py` performs cell-level analysis based on LEF and GDS inputs. It extracts several layout-related metrics and summarizes them into a CSV file, including pin length, obstructive length, M2 wire length, and the number of pins.
+## Paper Experimental Conditions
 
-`python3 metric.py --gds_path {gds_path} --lef_path {lef_path}`
-
-## Block Level Experimental Conditions
-
-ASAP7 allows off-grid routing for LISD, LIG, and M1–M3 layers due to its single patterning EUV process. Based on this, our evaluation includes the following considerations:
-
-ASAP7 allows off-grid routing for LISD, LIG, and M1–M3 layers due to its single patterning EUV process *ASAP7_manual_pdf* [\[4\]](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf). Based on this, the following conditions are applied to our block-level evaluation:
+ASAP7 allows off-grid routing for LISD, LIG, and M1–M3 layers due to its single patterning EUV process *ASAP7_manual_pdf* [\[3\]](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf). Based on this, the following conditions are applied to our block-level evaluation:
 
 1. Off-grid design rule violations on M1–M3 layers are ignored in all baseline block-level designs. According to the ASAP7 reference DRC manual and Calibre DRC rule files, off-grid constraints apply to M4–M5 layers, but not to M1–M3.
 
-2. Pins are extended to the maximum possible length at off-grid locations through `utils/pin_extension.py`. Since routers in standard EDA tools tend to operate on grid-aligned tracks, off-grid pins are often less accessible. To improve routability, we enlarge pins to increase the likelihood of on-grid contact.  
-This script takes a LEF file and a GDS file as input, and extends the pins to the maximum length allowed by ASAP7 design rules without causing violations.
+2. Pins are extended to the maximum possible length at off-grid locations through the `pin_extension` subcommand of `utils/run_evaluation.py`. Since routers in standard EDA tools tend to operate on grid-aligned tracks, off-grid pins are often less accessible. To improve routability, we enlarge pins to increase the likelihood of on-grid contact.  
+This subcommand takes a LEF file and a GDS file as input, and extends the pins to the maximum length allowed by ASAP7 design rules without causing violations.
 
-`python3 pin_extension.py --gds_path {gds_path} --lef_path {lef_path}`
+`python3 utils/run_evaluation.py pin_extension --gds_path {gds_path} --lef_path {lef_path}`
 
-
-## Results
-
-The Results directory was produced by taking the ASAP Reference placement results, running routing with our flow, and completing pin extension. You can use the provided database to run and validate the metrics.
 
 ## References
 \[1\] A. B. Kahng, S. Kang, S. Kim, J. Lee and D. Yoon, "Au-MEDAL: Adaptable Grid Router with Metal Edge Detection And Layer Integration", in Proc. Asia and South Pacific Design Automation Conference (ASP-DAC) (2026). \[[link](https://vlsicad.ucsd.edu/Publications/Conferences/420/c420.pdf)\]<br>
 \[2\] AutoCellGen (Original code of DP-Placer) \[[GitHub](https://github.com/The-OpenROAD-Project/AutoCellGen)\]<br>
-\[3\] PROBE3.0 \[[Github](https://github.com/ABKGroup/PROBE3.0)\]<br>
-\[4\] ASAP7 Manual PDF \[[GitHub](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf)\]
+\[3\] ASAP7 Manual PDF \[[GitHub](https://github.com/The-OpenROAD-Project/asap7_pdk_r1p7/blob/main/docs/asap7_drm_201207a.pdf)\]

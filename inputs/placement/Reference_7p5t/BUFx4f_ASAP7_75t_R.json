@@ -1,0 +1,36 @@
+{
+  "cell": "BUFx4f_ASAP7_75t_R",
+  "width": 6,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M1", "fin": 1, "nets": ["VSS", "A", "4"]},
+      "pmos": {"name": "M7", "fin": 1, "nets": ["VDD", "A", "4"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M1", "fin": 3, "nets": ["4", "A", "VSS"]},
+      "pmos": {"name": "M7", "fin": 3, "nets": ["4", "A", "VDD"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["VSS", "4", "Y"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["VDD", "4", "Y"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["Y", "4", "VSS"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["Y", "4", "VDD"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["VSS", "4", "Y"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["VDD", "4", "Y"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "M5", "fin": 3, "nets": ["Y", "4", "VSS"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["Y", "4", "VDD"]}
+    }
+  ]
+}

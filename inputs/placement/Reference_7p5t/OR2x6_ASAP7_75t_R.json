@@ -1,0 +1,56 @@
+{
+  "cell": "OR2x6_ASAP7_75t_R",
+  "width": 10,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "M3", "fin": 2, "nets": ["VSS", "B", "5"]},
+      "pmos": {"name": "M10", "fin": 3, "nets": ["VDD", "B", "7"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "M2", "fin": 2, "nets": ["5", "A", "VSS"]},
+      "pmos": {"name": "M11", "fin": 3, "nets": ["7", "A", "5"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "M2", "fin": 2, "nets": ["VSS", "A", "5"]},
+      "pmos": {"name": "M12", "fin": 3, "nets": ["5", "A", "8"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "M3", "fin": 2, "nets": ["5", "B", "VSS"]},
+      "pmos": {"name": "M13", "fin": 3, "nets": ["8", "B", "VDD"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["VSS", "5", "Y"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["VDD", "5", "Y"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["Y", "5", "VSS"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["Y", "5", "VDD"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["VSS", "5", "Y"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["VDD", "5", "Y"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["Y", "5", "VSS"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["Y", "5", "VDD"]}
+    },
+    {
+      "column": 9,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["VSS", "5", "Y"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["VDD", "5", "Y"]}
+    },
+    {
+      "column": 10,
+      "nmos": {"name": "M9", "fin": 3, "nets": ["Y", "5", "VSS"]},
+      "pmos": {"name": "M19", "fin": 3, "nets": ["Y", "5", "VDD"]}
+    }
+  ]
+}

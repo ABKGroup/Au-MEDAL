@@ -1,274 +1,352 @@
 {
-    "layer_map": {
-        "well": 1,
-        "fin": 2,
-        "P_SUB": 3,
-        "Gate": 7,
-        "Dummy": 8,
-        "GCut": 10,
-        "Active": 11,
-        "Nselect": 12,
-        "Pselect": 13,
-        "LIG": 16,
-        "LISD": 17,
-        "V0": 18,
-        "M1": 19,
-        "V1": 21,
-        "M2": 20,
-        "SDT": 88,
-        "BOUNDARY": 100
-    },
-    "num_row": 1,
-    "x_routing_resolution": [1, 1, 1, 1],
-    "y_routing_resolution": [1, 1, 1, 1],
-    "complexity_level": 0,
-    "metal_direction_priority": "BIDIRECTION",
-    "allow_below_min_track": false,
-    "num_max_pmos_fins": 3,
-    "num_max_nmos_fins": 3,
-    "addition_y_grid_for_pin": true,
-    "low_resolution_routing": false,
-    "ensure_access_points": true,
-    "pin_stretch_aware": true,
-    "max_tolerance": 9,
-    "power_layer": ["LIG", "M1"],
-    "ext_pin_layer": ["M1"],
-    "cell_height": 270,
-    "minimum_pin_length": 58,
-    "diffusion_break": 2,
-    "spacing": {
-        "S2S": {
-            "Active": {
-                "Gate": 9,
-                "Active": 27
+    "design_rules": {
+        "spacing": {
+            "S2S": {
+                "Active": {
+                    "Gate": 9,
+                    "Active": 27
+                },
+                "Gate": {
+                    "Active": 9,
+                    "Gate": 34,
+                    "SDT": 5
+                },
+                "fin": {
+                    "fin": 20
+                },
+                "LIG": {
+                    "LIG": 18,
+                    "SDT": 14,
+                    "LISD": 14
+                },
+                "LISD": {
+                    "LISD": 18,
+                    "LIG": 14
+                },
+                "M1": {
+                    "M1": 18
+                },
+                "M2": {
+                    "M2": 18
+                },
+                "M3": {
+                    "M3": 18
+                },
+                "V0": {
+                    "V0": 18
+                },
+                "V1": {
+                    "V1": 18
+                },
+                "SDT": {
+                    "Gate": 5,
+                    "LIG": 14
+                }
+            },
+            "T2T": {
+                "LIG": {
+                    "LIG": 31,
+                    "SDT": 14,
+                    "LISD": 14
+                },
+                "LISD": {
+                    "LISD": 27,
+                    "LIG": 14
+                },
+                "M1": {
+                    "M1": 31
+                },
+                "M2": {
+                    "M2": 31
+                },
+                "M3": {
+                    "M3": 31
+                },
+                "V0": {
+                    "V0": 18
+                },
+                "V1": {
+                    "V1": 18
+                },
+                "SDT": {
+                    "LIG": 14
+                }
+            },
+            "S2T": {
+                "LIG": {
+                    "LIG": 25,
+                    "SDT": 14,
+                    "LISD": 14,
+                    "Gate": 17,
+                    "Active": 5
+                },
+                "LISD": {
+                    "LISD": 25,
+                    "LIG": 14
+                },
+                "M1": {
+                    "M1": 25
+                },
+                "M2": {
+                    "M2": 25
+                },
+                "M3": {
+                    "M3": 25
+                },
+                "V0": {
+                    "V0": 18
+                },
+                "V1": {
+                    "V1": 18
+                },
+                "SDT": {
+                    "LIG": 14
+                },
+                "Gate": {
+                    "LIG": 17
+                },
+                "Active": {
+                    "LIG": 5
+                }
+            },
+            "C2C": {
+                "LIG": {
+                    "LIG": 18,
+                    "SDT": 14,
+                    "LISD": 15
+                },
+                "LISD": {
+                    "LISD": 18,
+                    "LIG": 15
+                },
+                "M1": {
+                    "M1": 20
+                },
+                "M2": {
+                    "M2": 20
+                },
+                "M3": {
+                    "M3": 20
+                },
+                "V0": {
+                    "V0": 27
+                },
+                "V1": {
+                    "V1": 27
+                },
+                "SDT": {
+                    "LIG": 14
+                }
+            }
+        },
+        "offset": {
+            "GCut": {
+                "Gate": 17
             },
             "Gate": {
-                "Active": 9,
-                "Gate": 34,
-                "SDT": 5
-            },
-            "fin": {
-                "fin": 20
-            },
-            "LIG": {
-                "LIG": 18,
-                "SDT": 14,
-                "LISD": 14
-            },
-            "LISD": {
-                "LISD": 18,
-                "LIG": 14
-            },
-            "M1": {
-                "M1": 18
-            },
-            "M2": {
-                "M2": 18
-            },
-            "M3": {
-                "M3": 18
-            },
-            "V0": {
-                "V0": 18
-            },
-            "V1": {
-                "V1": 18
-            },
-            "SDT": {
-                "Gate": 5,
-                "LIG": 14
-            }
-        },
-        "T2T": {
-            "LIG": {
-                "LIG": 31,
-                "SDT": 14,
-                "LISD": 14
-            },
-            "LISD": {
-                "LISD": 27,
-                "LIG": 14
-            },
-            "M1": {
-                "M1": 31
-            },
-            "M2": {
-                "M2": 31
-            },
-            "M3": {
-                "M3": 31
-            },
-            "V0": {
-                "V0": 18
-            },
-            "V1": {
-                "V1": 18
-            },
-            "SDT": {
-                "LIG": 14
-            }
-        },
-        "S2T": {
-            "LIG": {
-                "LIG": 25,
-                "SDT": 14,
-                "LISD": 14,
-                "Gate": 17,
-                "Active": 5
-            },
-            "LISD": {
-                "LISD": 25,
-                "LIG": 14
-            },
-            "M1": {
-                "M1": 25
-            },
-            "M2": {
-                "M2": 25
-            },
-            "M3": {
-                "M3": 25
-            },
-            "V0": {
-                "V0": 18
-            },
-            "V1": {
-                "V1": 18
-            },
-            "SDT": {
-                "LIG": 14
-            },
-            "Gate": {
-                "LIG": 17
+                "GCut": 17,
+                "Active": 25
             },
             "Active": {
-                "LIG": 5
+                "Gate": 25
             }
         },
-        "C2C": {
-            "LIG": {
-                "LIG": 18,
-                "SDT": 14,
-                "LISD": 15
-            },
-            "LISD": {
-                "LISD": 18,
-                "LIG": 15
-            },
-            "M1": {
-                "M1": 20
-            },
-            "M2": {
-                "M2": 20
-            },
-            "M3": {
-                "M3": 20
-            },
+        "width": {
+            "SDT": 24,
+            "Gate": 20,
+            "fin": 7,
+            "GCut": 44,
+            "LIG": 16,
+            "LISD": 24,
+            "M1": 18,
+            "M2": 18,
+            "V0": 18,
+            "V1": 18
+        },
+        "extension": {
+            "LIG": 22,
+            "LISD": 24,
+            "M1": 18,
+            "M2": 18,
+            "M3": 18,
+            "V0": 18,
+            "V1": 18
+        },
+        "max_tip_len": {
+            "LIG": 36,
+            "LISD": 36,
+            "M1": 36,
+            "M2": 36
+        },
+        "min_area": {
+            "LIG": 204,
+            "LISD": 504,
+            "M1": 504,
+            "M2": 504
+        },
+        "enclosure": {
             "V0": {
-                "V0": 27
+                "M1": 0,
+                "LISD": 0,
+                "LIG": 0
             },
             "V1": {
-                "V1": 27
-            },
-            "SDT": {
-                "LIG": 14
+                "M1": 5,
+                "M2": 5
             }
-        }
-    },
-    "gate_contact_layer": "LIG",
-    "active_contact_layer": "LISD",
-    "contact_over_active_gate": false,
-    "offset": {
-        "GCut": {"Gate": 17},
-        "Gate": {"GCut": 17, "Active": 25},
-        "Active": {"Gate": 25}
-    },
-    "width": {
-        "SDT": 24,
-        "Gate": 20,
-        "fin": 7,
-        "GCut": 44,
-        "LIG": 16,
-        "LISD": 24,
-        "M1": 18,
-        "M2": 18,
-        "V0": 18,
-        "V1": 18
-    },
-    "extension": {
-        "LIG": 22,
-        "LISD": 24,
-        "M1": 18,
-        "M2": 18,
-        "M3": 18,
-        "V0": 18,
-        "V1": 18
-    },
-    "min_side_len": {
-        "LIG": 36,
-        "LISD": 36,
-        "M1": 36,
-        "M2": 36
-    },
-    "power_width": {
-        "LIG": 16,
-        "M1": 18,
-        "M2": 18
-    },
-    "min_area": {
-        "LIG": 204,
-        "LISD": 504,
-        "M1": 504,
-        "M2": 504
-    },
-    "enclosure": {
-        "V0": {
-            "M1": 0,
-            "LISD": 0,
-            "LIG": 0
         },
-        "V1": {
-            "M1": 5,
-            "M2": 5
+        "no_overlap": []
+    },
+    "design_specs": {
+        "layer_map": {
+            "well": 1,
+            "fin": 2,
+            "P_SUB": 3,
+            "Gate": 7,
+            "Dummy": 8,
+            "GCut": 10,
+            "Active": 11,
+            "Nselect": 12,
+            "Pselect": 13,
+            "LIG": 16,
+            "LISD": 17,
+            "V0": 18,
+            "M1": 19,
+            "V1": 21,
+            "M2": 20,
+            "SDT": 88,
+            "BOUNDARY": 100
+        },
+        "power_layer": [
+            "LIG",
+            "M1"
+        ],
+        "ext_pin_layer": [
+            "M1"
+        ],
+        "cell_height": 270,
+        "gate_contact_layer": "LIG",
+        "active_contact_layer": "LISD",
+        "contact_over_active_gate": false,
+        "power_width": {
+            "LIG": 16,
+            "M1": 18,
+            "M2": 18
+        },
+        "routing_layers": [
+            {
+                "layer_name": "LIG",
+                "lower_layers": [],
+                "upper_layers": [
+                    "M1"
+                ],
+                "direction": "H",
+                "lower_via": null,
+                "upper_via": "V0",
+                "layer_index": 0,
+                "same_height_layers": [
+                    "LISD"
+                ],
+                "x_routing_resolution": 1,
+                "y_routing_resolution": 1
+            },
+            {
+                "layer_name": "LISD",
+                "lower_layers": [],
+                "upper_layers": [
+                    "M1"
+                ],
+                "direction": "B",
+                "lower_via": null,
+                "upper_via": "V0",
+                "layer_index": 1,
+                "same_height_layers": [
+                    "LIG"
+                ],
+                "x_routing_resolution": 1,
+                "y_routing_resolution": 1
+            },
+            {
+                "layer_name": "M1",
+                "lower_layers": [
+                    "LIG",
+                    "LISD"
+                ],
+                "upper_layers": [
+                    "M2"
+                ],
+                "direction": "B",
+                "lower_via": "V0",
+                "upper_via": "V1",
+                "layer_index": 2,
+                "same_height_layers": null,
+                "x_routing_resolution": 1,
+                "y_routing_resolution": 1
+            },
+            {
+                "layer_name": "M2",
+                "lower_layers": [
+                    "M1"
+                ],
+                "upper_layers": [],
+                "direction": "H",
+                "lower_via": "V1",
+                "upper_via": null,
+                "layer_index": 3,
+                "same_height_layers": null,
+                "x_routing_resolution": 1,
+                "y_routing_resolution": 1
+            }
+        ],
+        "vias": [
+            {
+                "via_name": "V0",
+                "via_index": 0,
+                "lower_layers": [
+                    "M1"
+                ],
+                "upper_layers": [
+                    "LIG",
+                    "LISD"
+                ]
+            },
+            {
+                "via_name": "V1",
+                "via_index": 1,
+                "lower_layers": [
+                    "M2"
+                ],
+                "upper_layers": [
+                    "M1"
+                ]
+            }
+        ],
+        "max_fins": {
+            "pmos": 3,
+            "nmos": 3
+        },
+        "diffusion_break": 2,
+        "design_option": {
+            "metal_optimization_order": "BIDIRECTION",
+            "allow_below_min_track": false,
+            "low_resolution_routing": false,
+            "ensure_access_points": true,
+            "pin_stretch_aware": true,
+            "max_tolerance": 9,
+            "minimum_pin_length": 58,
+            "add_hor_tracks_for_pin": true,
+            "tolerance_step": 3,
+            "top_layer_candidates": [
+                "M1",
+                "M2"
+            ],
+            "top_layer": "",
+            "log_level": "INFO",
+            "pin_tracks_on_lower_layers": false,
+            "pin_tracks_on_upper_layers": false,
+            "active_contact_tracks_from_pin_geometry": false,
+            "ext_pin_horizontal_edges": false,
+            "ext_pin_via_edges": false
         }
-    },
-    "no_overlap": [],
-    "routing_layers": ["LIG", "LISD", "M1", "M2"],
-    "routing_directions": ["H", "B", "B", "H"],
-    "vias": ["V0", "V1"],
-    "lower_via": {
-        "LIG": null,
-        "LISD": null,
-        "V0": null,
-        "M1": "V0",
-        "V1": "V0",
-        "M2": "V1"
-    },
-    "upper_via": {
-        "LIG": "V0",
-        "LISD": "V0",
-        "V0": "V1",
-        "M1": "V1",
-        "M2": null
-    },
-    "lower_layers": {
-        "LIG": [],
-        "LISD": [],
-        "V0": ["LIG", "LISD"],
-        "M1": ["LIG", "LISD"],
-        "V1": ["M1"],
-        "M2": ["M1"]
-    },
-    "upper_layers": {
-        "LIG": ["M1"],
-        "LISD": ["M1"],
-        "V0": ["M1"],
-        "M1": ["M2"],
-        "V1": ["M2"],
-        "M2": []
-    },
-    "same_height_layers": {
-        "LIG": ["LISD"],
-        "LISD": ["LIG"]
     }
 }
