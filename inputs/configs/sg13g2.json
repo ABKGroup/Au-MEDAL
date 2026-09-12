@@ -1,0 +1,324 @@
+{
+ "design_rules": {
+  "enclosure": {
+   "Cont": {
+    "Active": 0,
+    "Gate": 0,
+    "M1": 50
+   },
+   "V1": {
+    "M1": 50,
+    "M2": 50
+   }
+  },
+  "extension": {
+   "Active": 160,
+   "Cont": 160,
+   "Gate": 130,
+   "M1": 290,
+   "M2": 290,
+   "V1": 190
+  },
+  "max_tip_len": {
+   "Active": 160,
+   "Gate": 130,
+   "M1": 160,
+   "M2": 200
+  },
+  "min_area": {
+   "Active": 0,
+   "Cont": 0,
+   "Gate": 0,
+   "M1": 0,
+   "M2": 0
+  },
+  "no_overlap": [],
+  "offset": {
+   "Active": {
+    "Gate": 330
+   },
+   "Gate": {
+    "Active": 330
+   }
+  },
+  "spacing": {
+   "C2C": {
+    "Active": {
+     "Active": 0,
+     "Gate": 70
+    },
+    "Cont": {
+     "Cont": 160
+    },
+    "Gate": {
+     "Active": 70,
+     "Gate": 390
+    },
+    "M1": {
+     "M1": 180
+    },
+    "M2": {
+     "M2": 210
+    },
+    "V1": {
+     "V1": 220
+    },
+    "fin": {
+     "fin": 0
+    }
+   },
+   "S2S": {
+    "Active": {
+     "Active": 0,
+     "Gate": 70
+    },
+    "Cont": {
+     "Cont": 160
+    },
+    "Gate": {
+     "Active": 70,
+     "Gate": 390
+    },
+    "M1": {
+     "M1": 180
+    },
+    "M2": {
+     "M2": 210
+    },
+    "V1": {
+     "V1": 220
+    },
+    "fin": {
+     "fin": 0
+    }
+   },
+   "S2T": {
+    "Active": {
+     "Active": 0,
+     "Gate": 70
+    },
+    "Cont": {
+     "Cont": 160
+    },
+    "Gate": {
+     "Active": 70,
+     "Gate": 390
+    },
+    "M1": {
+     "M1": 180
+    },
+    "M2": {
+     "M2": 210
+    },
+    "V1": {
+     "V1": 220
+    },
+    "fin": {
+     "fin": 0
+    }
+   },
+   "T2T": {
+    "Active": {
+     "Active": 0,
+     "Gate": 70
+    },
+    "Cont": {
+     "Cont": 160
+    },
+    "Gate": {
+     "Active": 70,
+     "Gate": 390
+    },
+    "M1": {
+     "M1": 180
+    },
+    "M2": {
+     "M2": 210
+    },
+    "V1": {
+     "V1": 220
+    }
+   }
+  },
+  "width": {
+   "Active": 260,
+   "Cont": 160,
+   "Gate": 130,
+   "M1": 160,
+   "M2": 200,
+   "V1": 190,
+   "fin": 1
+  }
+ },
+ "design_specs": {
+  "active_contact_layer": "Active",
+  "cell_height": 3780,
+  "contact_over_active_gate": false,
+  "design_option": {
+   "active_contact_enclosure": 70,
+   "active_contact_tracks_from_pin_geometry": false,
+   "active_gate_extension": 320,
+   "active_y_offset": 590,
+   "add_hor_tracks_for_pin": false,
+   "bulk_planar": true,
+   "ext_pin_horizontal_edges": true,
+   "ext_pin_via_edges": true,
+   "log_level": "INFO",
+   "low_resolution_routing": false,
+   "max_tolerance": 9,
+   "metal_optimization_order": "BIDIRECTION",
+   "minimum_pin_length": 0,
+   "pSD_active_enclosure": 120,
+   "pin_stretch_aware": true,
+   "pin_tracks_on_lower_layers": true,
+   "pin_tracks_on_upper_layers": true,
+   "top_layer": "",
+   "top_layer_candidates": [
+    "M1",
+    "M2"
+   ],
+   "y_offset": 210,
+   "y_unit": 410,
+   "site_width": 480,
+   "z3_opt_timeout_ms": 1800000,
+   "z3_plain_fallback_timeout_ms": 3600000,
+   "via_cross_enclosure": 20,
+   "m1_min_area": 90000,
+   "m2_min_area": 144000,
+   "require_matching_gate_nets": false,
+   "device_rows_on_m1": true,
+   "optimize_every_tolerance": true,
+   "pin_grid_x": 480,
+   "pin_grid_y": 420
+  },
+  "diffusion_break": 1,
+  "ext_pin_layer": [
+   "M1"
+  ],
+  "gate_contact_layer": "Gate",
+  "gds_database_unit_nm": 1,
+  "layer_map": {
+   "Active": 1,
+   "BOUNDARY": 189,
+   "Cont": 6,
+   "Gate": 5,
+   "M1": 8,
+   "M2": 10,
+   "V1": 19,
+   "pSD": 14,
+   "well": 31
+  },
+  "max_fins": {
+   "nmos": 740,
+   "pmos": 1120
+  },
+  "power_layer": [
+   "M1"
+  ],
+  "power_width": {
+   "Active": 300,
+   "M1": 440
+  },
+  "routing_layers": [
+   {
+    "direction": "P",
+    "layer_name": "Active",
+    "lower_layers": [],
+    "lower_via": null,
+    "same_height_layers": [
+     "Gate"
+    ],
+    "upper_layers": [
+     "M1"
+    ],
+    "upper_via": "Cont",
+    "x_routing_resolution": 1,
+    "y_routing_resolution": 1
+   },
+   {
+    "direction": "B",
+    "layer_name": "Gate",
+    "lower_layers": [],
+    "lower_via": null,
+    "same_height_layers": [
+     "Active"
+    ],
+    "upper_layers": [
+     "M1"
+    ],
+    "upper_via": "Cont",
+    "x_routing_resolution": 1,
+    "y_routing_resolution": 1
+   },
+   {
+    "direction": "B",
+    "layer_name": "M1",
+    "lower_layers": [
+     "Gate",
+     "Active"
+    ],
+    "lower_via": "Cont",
+    "same_height_layers": [],
+    "upper_layers": [
+     "M2"
+    ],
+    "upper_via": "V1",
+    "x_routing_resolution": 1,
+    "y_routing_resolution": 1
+   },
+   {
+    "direction": "B",
+    "layer_name": "M2",
+    "lower_layers": [
+     "M1"
+    ],
+    "lower_via": "V1",
+    "same_height_layers": [],
+    "upper_layers": [],
+    "upper_via": null,
+    "x_routing_resolution": 1,
+    "y_routing_resolution": 1
+   }
+  ],
+  "vias": [
+   {
+    "lower_layers": [
+     "Gate",
+     "Active"
+    ],
+    "upper_layers": [
+     "M1"
+    ],
+    "via_name": "Cont"
+   },
+   {
+    "lower_layers": [
+     "M1"
+    ],
+    "upper_layers": [
+     "M2"
+    ],
+    "via_name": "V1"
+   }
+  ]
+ },
+ "design_options": {
+  "label_texttype": {
+   "Active": 1,
+   "Gate": 1,
+   "M1": 25,
+   "M2": 25,
+   "well": 1,
+   "P_SUB": 1
+  },
+  "z3_opt_timeout_ms": 60000,
+  "z3_plain_fallback_timeout_ms": 300000,
+  "active_min_notch_spacing": 210,
+  "gate_min_notch_spacing": 180,
+  "m1_wide_min_spacing": 180,
+  "m1_rail_e_spacing": 220,
+  "m1_rail_e_min_run": 1000,
+  "via_cross_enclosure": 20
+ },
+ "log_level": "INFO"
+}

@@ -1,0 +1,18 @@
+.SUBCKT sg13g2_a31oi_2 VSS A1 Y A2 A3 B1 VDD
+M$1 VSS A3 \$2 VSS sg13_lv_nmos L=0.13u W=1.48u AS=0.5287p AD=0.2886p PS=4.48u
++ PD=2.26u
+M$3 VSS B1 Y VSS sg13_lv_nmos L=0.13u W=1.48u AS=0.5287p AD=0.2886p PS=4.48u
++ PD=2.26u
+M$5 \$3 A1 Y VSS sg13_lv_nmos L=0.13u W=1.48u AS=0.3886p AD=0.2886p PS=3.3u
++ PD=2.26u
+M$7 \$3 A2 \$2 VSS sg13_lv_nmos L=0.13u W=1.48u AS=0.2886p AD=0.3886p PS=2.26u
++ PD=3.3u
+M$9 \$10 A3 Y VDD sg13_lv_pmos L=0.13u W=2.24u AS=0.5843p AD=0.4368p PS=4.44u
++ PD=3.02u
+M$11 \$10 B1 VDD VDD sg13_lv_pmos L=0.13u W=2.24u AS=0.486p AD=0.6335p PS=3.43u
++ PD=4.85u
+M$13 \$10 A1 Y VDD sg13_lv_pmos L=0.13u W=2.24u AS=0.5843p AD=0.4368p PS=4.44u
++ PD=3.02u
+M$15 \$10 A2 Y VDD sg13_lv_pmos L=0.13u W=2.24u AS=0.4368p AD=0.5843p PS=3.02u
++ PD=4.44u
+.ENDS sg13g2_a31oi_2

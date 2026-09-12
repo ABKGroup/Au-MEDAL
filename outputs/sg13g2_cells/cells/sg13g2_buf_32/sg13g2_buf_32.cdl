@@ -1,0 +1,7 @@
+.SUBCKT sg13g2_buf_32 X A VDD VSS
+*.PININFO A:I X:O VDD:B VSS:B
+MN0 net1 A VSS VSS sg13_lv_nmos m=1 w=550.00n l=130.00n ng=1
+MN1 X net1 VSS VSS sg13_lv_nmos m=1 w=23.68u l=130.00n ng=32
+MP1 X net1 VDD VDD sg13_lv_pmos m=1 w=35.84u l=130.00n ng=32
+MP0 net1 A VDD VDD sg13_lv_pmos m=1 w=840.00n l=130.00n ng=1
+.ENDS

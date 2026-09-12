@@ -1,0 +1,171 @@
+{
+  "cell": "sg13g2_buf_32",
+  "width": 35,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "MN1", "fin": 550, "nets": ["net1", "A", "VSS"]},
+      "pmos": {"name": "MP0", "fin": 840, "nets": ["net1", "A", "VDD"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 6,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 7,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 8,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 9,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 10,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 11,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 12,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 13,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 14,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 15,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 16,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 17,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 18,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 19,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 20,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 21,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 22,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 23,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 24,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 25,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 26,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 27,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 28,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 29,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 30,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 31,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    },
+    {
+      "column": 32,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 33,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["X", "net1", "VSS"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["X", "net1", "VDD"]}
+    }
+  ]
+}

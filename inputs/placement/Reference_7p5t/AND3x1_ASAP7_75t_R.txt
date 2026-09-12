@@ -1,9 +1,0 @@
--------- Solution 1 --------
-[Column 1]
-NMOS : M0(3) [6 A 8], PMOS : M4(3) [6 A VDD]
-[Column 2]
-NMOS : M1(3) [8 B 9], PMOS : M5(3) [VDD B 6]
-[Column 3]
-NMOS : M2(3) [9 C VSS], PMOS : M6(3) [6 C VDD]
-[Column 4]
-NMOS : M3(3) [VSS 6 Y], PMOS : M7(3) [VDD 6 Y]

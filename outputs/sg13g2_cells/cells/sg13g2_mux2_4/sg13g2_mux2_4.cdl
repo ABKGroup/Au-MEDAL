@@ -1,0 +1,15 @@
+.SUBCKT sg13g2_mux2_4 X A0 A1 S VDD VSS
+*.PININFO A0:I A1:I S:I X:O VDD:B VSS:B
+MP1 net4 S VDD VDD sg13_lv_pmos m=1 w=1.000u l=130.00n ng=1
+MP5 X net6 VDD VDD sg13_lv_pmos m=1 w=4.48u l=130.00n ng=4
+MP4 net6 A1 net5 VDD sg13_lv_pmos m=1 w=1.000u l=130.00n ng=1
+MP0 Sb S VDD VDD sg13_lv_pmos m=1 w=840.00n l=130.00n ng=1
+MP3 net5 Sb VDD VDD sg13_lv_pmos m=1 w=1.000u l=130.00n ng=1
+MP2 net6 A0 net4 VDD sg13_lv_pmos m=1 w=1.000u l=130.00n ng=1
+MN4 net3 S VSS VSS sg13_lv_nmos m=1 w=740.00n l=130.00n ng=1
+MN2 net1 Sb VSS VSS sg13_lv_nmos m=1 w=740.00n l=130.00n ng=1
+MN5 X net6 VSS VSS sg13_lv_nmos m=1 w=2.96u l=130.00n ng=4
+MN0 Sb S VSS VSS sg13_lv_nmos m=1 w=550.00n l=130.00n ng=1
+MN3 net6 A1 net3 VSS sg13_lv_nmos m=1 w=740.00n l=130.00n ng=1
+MN1 net6 A0 net1 VSS sg13_lv_nmos m=1 w=740.00n l=130.00n ng=1
+.ENDS

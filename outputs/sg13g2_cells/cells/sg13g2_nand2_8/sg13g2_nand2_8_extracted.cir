@@ -1,0 +1,10 @@
+.SUBCKT sg13g2_nand2_8 VSS Y A B VDD
+M$1 \$2 A Y VSS sg13_lv_nmos L=0.13u W=5.92u AS=1.2544p AD=1.1544p PS=10.08u
++ PD=9.04u
+M$9 VSS B \$2 VSS sg13_lv_nmos L=0.13u W=5.92u AS=1.548p AD=1.2544p PS=12.32u
++ PD=10.08u
+M$17 VDD A Y VDD sg13_lv_pmos L=0.13u W=8.96u AS=2.1332p AD=1.944p PS=15.5u
++ PD=13.72u
+M$25 VDD B Y VDD sg13_lv_pmos L=0.13u W=8.96u AS=1.944p AD=2.1332p PS=13.72u
++ PD=15.5u
+.ENDS sg13g2_nand2_8
