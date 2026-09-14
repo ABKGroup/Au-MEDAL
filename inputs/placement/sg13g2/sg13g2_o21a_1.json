@@ -1,0 +1,31 @@
+{
+  "cell": "sg13g2_o21a_1",
+  "width": 7,
+  "columns": [
+    {
+      "column": 1,
+      "nmos": {"name": "MN3", "fin": 740, "nets": ["VSS", "net1", "X"]},
+      "pmos": {"name": "MP3", "fin": 1120, "nets": ["VDD", "net1", "X"]}
+    },
+    {
+      "column": 2,
+      "nmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]},
+      "pmos": {"name": "dummy", "fin": 0, "nets": ["dummy", "dummy", "dummy"]}
+    },
+    {
+      "column": 3,
+      "nmos": {"name": "MN1", "fin": 740, "nets": ["net2", "A2", "net1"]},
+      "pmos": {"name": "MP1", "fin": 1120, "nets": ["VDD", "A2", "net3"]}
+    },
+    {
+      "column": 4,
+      "nmos": {"name": "MN0", "fin": 740, "nets": ["net1", "A1", "net2"]},
+      "pmos": {"name": "MP0", "fin": 1120, "nets": ["net3", "A1", "net1"]}
+    },
+    {
+      "column": 5,
+      "nmos": {"name": "MN2", "fin": 740, "nets": ["net2", "B1", "VSS"]},
+      "pmos": {"name": "MP2", "fin": 1120, "nets": ["net1", "B1", "VDD"]}
+    }
+  ]
+}

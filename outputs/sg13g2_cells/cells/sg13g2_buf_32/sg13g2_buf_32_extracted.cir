@@ -1,0 +1,10 @@
+.SUBCKT sg13g2_buf_32 VSS X A VDD
+M$1 VSS A \$4 VSS sg13_lv_nmos L=0.13u W=0.55u AS=0.18685p AD=0.1835p PS=1.54u
++ PD=1.79u
+M$2 VSS \$4 X VSS sg13_lv_nmos L=0.13u W=23.68u AS=6.32705p AD=4.6176p
++ PS=50.68u PD=36.16u
+M$34 VDD A \$4 VDD sg13_lv_pmos L=0.13u W=0.84u AS=0.2578p AD=0.2763p PS=1.92u
++ PD=2.37u
+M$35 VDD \$4 X VDD sg13_lv_pmos L=0.13u W=35.84u AS=7.7662p AD=7.9652p
++ PS=54.88u PD=56.66u
+.ENDS sg13g2_buf_32

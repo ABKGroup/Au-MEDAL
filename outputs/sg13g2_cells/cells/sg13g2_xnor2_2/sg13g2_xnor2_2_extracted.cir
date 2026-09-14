@@ -1,0 +1,22 @@
+.SUBCKT sg13g2_xnor2_2 VSS Y B A VDD
+M$1 \$4 B \$5 VSS sg13_lv_nmos L=0.13u W=0.64u AS=0.2123p AD=0.1248p PS=1.97u
++ PD=1.03u
+M$2 VSS A \$5 VSS sg13_lv_nmos L=0.13u W=0.64u AS=0.19p AD=0.1248p PS=1.54u
++ PD=1.03u
+M$3 VSS A \$3 VSS sg13_lv_nmos L=0.13u W=1.48u AS=0.5252p AD=0.2886p PS=4.48u
++ PD=2.26u
+M$5 \$3 \$4 Y VSS sg13_lv_nmos L=0.13u W=1.48u AS=0.3886p AD=0.2886p PS=3.3u
++ PD=2.26u
+M$7 VSS B \$3 VSS sg13_lv_nmos L=0.13u W=1.48u AS=0.387p AD=0.3886p PS=3.08u
++ PD=3.3u
+M$9 VDD B \$4 VDD sg13_lv_pmos L=0.13u W=0.84u AS=0.3672p AD=0.1638p PS=3.14u
++ PD=1.23u
+M$10 VDD A \$4 VDD sg13_lv_pmos L=0.13u W=0.84u AS=0.2578p AD=0.1638p PS=1.92u
++ PD=1.23u
+M$11 VDD A \$8 VDD sg13_lv_pmos L=0.13u W=2.24u AS=0.4762p AD=0.6752p PS=3.43u
++ PD=5.21u
+M$13 Y \$4 VDD VDD sg13_lv_pmos L=0.13u W=2.24u AS=0.6335p AD=0.486p PS=4.85u
++ PD=3.43u
+M$15 Y B \$8 VDD sg13_lv_pmos L=0.13u W=2.24u AS=0.4368p AD=0.5843p PS=3.02u
++ PD=4.44u
+.ENDS sg13g2_xnor2_2

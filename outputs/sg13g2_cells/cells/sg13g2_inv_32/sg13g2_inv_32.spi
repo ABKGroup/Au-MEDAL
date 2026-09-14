@@ -1,0 +1,4 @@
+.subckt sg13g2_inv_32 Y A VDD VSS
+XN0 Y A VSS VSS sg13_lv_nmos w=23.68u l=130.00n ng=32 ad=4.499e-12 as=4.721e-12 pd=3.584e-05 ps=3.792e-05 m=1
+XP0 Y A VDD VDD sg13_lv_pmos w=35.84u l=130.00n ng=32 ad=6.81e-12 as=7.146e-12 pd=4.8e-05 ps=5.084e-05 m=1
+.ends

@@ -1,0 +1,6 @@
+.subckt sg13g2_buf_32 X A VDD VSS
+XN0 net1 A VSS VSS sg13_lv_nmos w=550.00n l=130.00n ng=1 ad=1.87e-13 as=1.87e-13 pd=1.78e-06 ps=1.78e-06 m=1
+XN1 X net1 VSS VSS sg13_lv_nmos w=23.68u l=130.00n ng=32 ad=4.499e-12 as=4.721e-12 pd=3.584e-05 ps=3.792e-05 m=1
+XP1 X net1 VDD VDD sg13_lv_pmos w=35.84u l=130.00n ng=32 ad=6.81e-12 as=7.146e-12 pd=4.8e-05 ps=5.084e-05 m=1
+XP0 net1 A VDD VDD sg13_lv_pmos w=840.00n l=130.00n ng=1 ad=2.856e-13 as=2.856e-13 pd=2.36e-06 ps=2.36e-06 m=1
+.ends
