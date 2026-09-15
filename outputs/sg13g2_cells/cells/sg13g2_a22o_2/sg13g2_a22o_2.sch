@@ -99,32 +99,154 @@ C {lab_wire.sym} 100 480 0 0 {name=l2 sig_type=std_logic lab=net2}
 C {lab_wire.sym} 360 480 0 0 {name=l3 sig_type=std_logic lab=net3}
 C {lab_wire.sym} 100 380 0 0 {name=l4 sig_type=std_logic lab=VSS}
 C {lab_wire.sym} -100 420 0 0 {name=l5 sig_type=std_logic lab=A1}
-C {sg13_lv_nmos.sym} 0 420 0 0 {name=MN0 w=740.00n l=130.00n ng=1 m=1 model=sg13_lv_nmos spiceprefix=X}
+C {au_medal_sg13_lv_nmos.sym} 0 420 0 0 {name=MN0 w=740.00n l=130.00n ng=1 model=sg13_lv_nmos spiceprefix=X embed=true}
+[
+v {xschem version=3.4.8RC file_version=1.3
+* Modified 2026-09-15 by Au-MEDAL contributors: removed multiplier
+* parameter from netlisting formats, default properties and visible text.
+* Original source: IHP-Open-PDK commit 22f2a25f1734796de3debbbf29cf697cbbc54081
+*
+* Copyright 2024  IHP PDK Authors
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+}
+G {}
+K {type=nmos
+lvs_format="M@name @pinlist @model w=@w l=@l ng=@ng"
+format="@spiceprefix@name @pinlist @model w=@w l=@l ng=@ng"
+template="name=M1
+l=0.13u
+w=0.15u
+ng=1
+model=sg13_lv_nmos
+spiceprefix=X
+"
+drc="fet_drc @name @symname @model @w @l @ng"
+}
+V {}
+S {}
+F {}
+E {}
+L 4 7.5 -22.5 7.5 22.5 {}
+L 4 20 -30 20 -17.5 {}
+L 4 20 17.5 20 30 {}
+L 4 2.5 -15 2.5 15 {}
+L 4 7.5 17.5 20 17.5 {}
+L 4 7.5 -17.5 20 -17.5 {}
+L 4 -20 -0 2 -0 {}
+B 5 17.5 -32.5 22.5 -27.5 {name=D dir=inout}
+B 5 -22.5 -2.5 -17.5 2.5 {name=G dir=in}
+B 5 17.5 27.5 22.5 32.5 {name=S dir=inout}
+B 5 19.921875 -0.078125 20.078125 0.078125 {name=B dir=in}
+P 4 4 15 20 20 17.5 15 15 15 20 {fill=true}
+P 5 4 20 2.5 15 0 20 -2.5 20 2.5 {fill=true}
+T {@name} 5 -30 0 1 0.2 0.2 {}
+T {G} -10 -10 0 1 0.15 0.15 {layer=7}
+T {@model} 30 31.25 2 1 0.2 0.2 {}
+T {ng=@ng} 31.25 -2.5 0 0 0.2 0.2 { layer=13}
+T {l=@l} 31.25 -15 0 0 0.2 0.2 {layer=13}
+T {w=@w} 31.25 -26.25 0 0 0.2 0.2 { layer=13}
+T {S} 22.5 17.5 0 0 0.15 0.15 {layer=7}
+T {D} 22.5 -17.5 2 1 0.15 0.15 {layer=7}
+T {B} 20 -10 0 0 0.15 0.15 {layer=7}
+]
 C {lab_wire.sym} 100 500 0 0 {name=l7 sig_type=std_logic lab=VSS}
 C {lab_wire.sym} -100 540 0 0 {name=l8 sig_type=std_logic lab=A2}
-C {sg13_lv_nmos.sym} 0 540 0 0 {name=MN1 w=740.00n l=130.00n ng=1 m=1 model=sg13_lv_nmos spiceprefix=X}
+C {au_medal_sg13_lv_nmos.sym} 0 540 0 0 {name=MN1 w=740.00n l=130.00n ng=1 model=sg13_lv_nmos spiceprefix=X}
 C {lab_wire.sym} 360 380 0 0 {name=l10 sig_type=std_logic lab=VSS}
 C {lab_wire.sym} 160 420 0 0 {name=l11 sig_type=std_logic lab=B1}
-C {sg13_lv_nmos.sym} 260 420 0 0 {name=MN2 w=740.00n l=130.00n ng=1 m=1 model=sg13_lv_nmos spiceprefix=X}
+C {au_medal_sg13_lv_nmos.sym} 260 420 0 0 {name=MN2 w=740.00n l=130.00n ng=1 model=sg13_lv_nmos spiceprefix=X}
 C {lab_wire.sym} 360 500 0 0 {name=l13 sig_type=std_logic lab=VSS}
 C {lab_wire.sym} 160 540 0 0 {name=l14 sig_type=std_logic lab=B2}
-C {sg13_lv_nmos.sym} 260 540 0 0 {name=MN3 w=740.00n l=130.00n ng=1 m=1 model=sg13_lv_nmos spiceprefix=X}
+C {au_medal_sg13_lv_nmos.sym} 260 540 0 0 {name=MN3 w=740.00n l=130.00n ng=1 model=sg13_lv_nmos spiceprefix=X}
 C {lab_wire.sym} 100 140 0 0 {name=l16 sig_type=std_logic lab=VDD}
 C {lab_wire.sym} -100 180 0 0 {name=l17 sig_type=std_logic lab=A1}
-C {sg13_lv_pmos.sym} 0 180 0 0 {name=MP0 w=1.12u l=130.00n ng=1 m=1 model=sg13_lv_pmos spiceprefix=X}
+C {au_medal_sg13_lv_pmos.sym} 0 180 0 0 {name=MP0 w=1.12u l=130.00n ng=1 model=sg13_lv_pmos spiceprefix=X embed=true}
+[
+v {xschem version=3.4.8RC file_version=1.3
+* Modified 2026-09-15 by Au-MEDAL contributors: removed multiplier
+* parameter from netlisting formats, default properties and visible text.
+* Original source: IHP-Open-PDK commit 22f2a25f1734796de3debbbf29cf697cbbc54081
+*
+* Copyright 2023  IHP PDK Authors
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+}
+G {}
+K {type=pmos
+lvs_format="M@name @pinlist @model w=@w l=@l ng=@ng"
+format="@spiceprefix@name @pinlist @model w=@w l=@l ng=@ng"
+template="name=M1
+l=0.13u
+w=0.15u
+ng=1
+model=sg13_lv_pmos
+spiceprefix=X
+"
+drc="fet_drc @name @symname @model @w @l @ng"
+}
+V {}
+S {}
+F {}
+E {}
+L 4 7.5 -22.5 7.5 22.5 {}
+L 4 20 -30 20 -17.5 {}
+L 4 20 17.5 20 30 {}
+L 4 2.5 -15 2.5 15 {}
+L 4 7.5 17.5 20 17.5 {}
+L 4 7.5 -17.5 20 -17.5 {}
+L 4 -20 -0 2 -0 {}
+B 5 17.5 27.5 22.5 32.5 {name=D dir=inout}
+B 5 -22.5 -2.5 -17.5 2.5 {name=G dir=in}
+B 5 17.5 -32.5 22.5 -27.5 {name=S dir=inout}
+B 5 19.921875 -0.078125 20.078125 0.078125 {name=B dir=in}
+P 4 4 12.5 -20 7.5 -17.5 12.5 -15 12.5 -20 {fill=true}
+P 5 4 15 -2.5 20 0 15 2.5 15 -2.5 {fill=true}
+T {@name} 5 -30 0 1 0.2 0.2 {}
+T {G} -10 -10 0 1 0.15 0.15 {layer=7}
+T {@model} 30 31.25 2 1 0.2 0.2 {}
+T {ng=@ng} 31.25 -2.5 0 0 0.2 0.2 { layer=13}
+T {l=@l} 31.25 -15 0 0 0.2 0.2 {layer=13}
+T {w=@w} 31.25 -26.25 0 0 0.2 0.2 { layer=13}
+T {D} 22.5 17.5 0 0 0.15 0.15 {layer=7}
+T {S} 22.5 -17.5 2 1 0.15 0.15 {layer=7}
+T {B} 20 -10 0 0 0.15 0.15 {layer=7}
+]
 C {lab_wire.sym} 360 140 0 0 {name=l19 sig_type=std_logic lab=VDD}
 C {lab_wire.sym} 160 180 0 0 {name=l20 sig_type=std_logic lab=A2}
-C {sg13_lv_pmos.sym} 260 180 0 0 {name=MP1 w=1.12u l=130.00n ng=1 m=1 model=sg13_lv_pmos spiceprefix=X}
+C {au_medal_sg13_lv_pmos.sym} 260 180 0 0 {name=MP1 w=1.12u l=130.00n ng=1 model=sg13_lv_pmos spiceprefix=X}
 C {lab_wire.sym} 100 20 0 0 {name=l22 sig_type=std_logic lab=VDD}
 C {lab_wire.sym} -100 60 0 0 {name=l23 sig_type=std_logic lab=B1}
-C {sg13_lv_pmos.sym} 0 60 0 0 {name=MP2 w=1.12u l=130.00n ng=1 m=1 model=sg13_lv_pmos spiceprefix=X}
+C {au_medal_sg13_lv_pmos.sym} 0 60 0 0 {name=MP2 w=1.12u l=130.00n ng=1 model=sg13_lv_pmos spiceprefix=X}
 C {lab_wire.sym} 360 20 0 0 {name=l25 sig_type=std_logic lab=VDD}
 C {lab_wire.sym} 160 60 0 0 {name=l26 sig_type=std_logic lab=B2}
-C {sg13_lv_pmos.sym} 260 60 0 0 {name=MP3 w=1.12u l=130.00n ng=1 m=1 model=sg13_lv_pmos spiceprefix=X}
+C {au_medal_sg13_lv_pmos.sym} 260 60 0 0 {name=MP3 w=1.12u l=130.00n ng=1 model=sg13_lv_pmos spiceprefix=X}
 C {lab_wire.sym} 620 380 0 0 {name=l28 sig_type=std_logic lab=VSS}
-C {sg13_lv_nmos.sym} 520 420 0 0 {name=MN4 w=1.48u l=130.00n ng=2 m=1 model=sg13_lv_nmos spiceprefix=X}
+C {au_medal_sg13_lv_nmos.sym} 520 420 0 0 {name=MN4 w=1.48u l=130.00n ng=2 model=sg13_lv_nmos spiceprefix=X}
 C {lab_wire.sym} 620 140 0 0 {name=l30 sig_type=std_logic lab=VDD}
-C {sg13_lv_pmos.sym} 520 180 0 0 {name=MP4 w=2.24u l=130.00n ng=2 m=1 model=sg13_lv_pmos spiceprefix=X}
+C {au_medal_sg13_lv_pmos.sym} 520 180 0 0 {name=MP4 w=2.24u l=130.00n ng=2 model=sg13_lv_pmos spiceprefix=X}
 C {devices/opin.sym} 780 300 0 0 {name=p1 lab=X}
 C {devices/ipin.sym} -240 240 0 0 {name=p2 lab=A1}
 C {devices/ipin.sym} -240 280 0 0 {name=p3 lab=A2}

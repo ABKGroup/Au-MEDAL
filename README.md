@@ -49,15 +49,20 @@ python3 tools/generate_ihp_views.py \
   --output-dir out/views/sg13g2_nand2_4
 ```
 
-The input is one flat IHP subcircuit with explicit total `w`, `l`, `ng` and `m=1`.
-The generator preserves those parameters and port order, groups series devices into
-vertical schematic stacks, and draws PMOS above NMOS. It rejects ambiguous multiplier
-conversion and requires fresh output paths. The supplied schematics were netlisted and
-rendered with Xschem 3.4.8RC and the IHP symbols at commit
-`22f2a25f1734796de3debbbf29cf697cbbc54081`. Older symbols can have a different
-drain/source orientation. Use that revision and include both the Xschem `devices`
-directory and the PDK's `ihp-sg13g2/libs.tech/xschem/sg13g2_pr` directory in the
-symbol search path. All 30 native netlists preserve the CDL connections and parameters.
+The input is one flat IHP subcircuit with explicit total `w`, `l` and `ng`.
+The generator preserves these values and port order. It accepts a legacy neutral
+`m=1` but omits the multiplier from every generated CDL, SPICE and schematic view;
+other multipliers require an explicit W/ng specification rather than an inferred
+conversion. Fresh output paths are required.
+
+Schematics group series devices into vertical stacks and draw PMOS above NMOS.
+Each embeds [multiplier-free IHP transistor symbols](tools/assets/ihp_xschem/README.md),
+including their drawing, pin order and W/L/ng properties. Their defaults, display
+text and netlisting formats cannot restore `m`. Keep Xschem's standard `devices`
+directory in its symbol search path; a separately installed IHP symbol revision is
+not needed to open these schematics. All 30 were netlisted and rendered with
+Xschem 3.4.8RC, preserving the original 220 devices' connections and W/L/ng values.
+The multiplier-free CDL files also match the retained GDS in native LVS.
 
 ## The cells
 
@@ -72,6 +77,9 @@ sets a 55% global maximum. Chip-level density compliance depends on the integrat
 
 Metal1 pins use layer 8/2, full rectangular VDD/VSS rails, and signal access on the
 0.48 x 0.42 um grid. Contacts have at least 0.05 um Metal1 enclosure on all sides.
+The solver requires a connected M1 grid witness for each signal port; the writer
+derives actual pin rectangles from the routed metal, even without external-label
+hints. Its legal M1-extension paths and invalid-input guards have separate tests.
 Optional two-contact additions use guarded vertical and horizontal candidates within
 the existing Active/GatPoly geometry. Some diffusion and GatPoly components retain one
 contact. Review contact redundancy for the intended application.

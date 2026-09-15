@@ -1,4 +1,4 @@
-"""Generate CDL, SPICE and Xschem views from explicit total-W/ng, m=1 CDL."""
+"""Generate multiplier-free CDL, SPICE and Xschem views from total-W/ng CDL."""
 
 import argparse
 from dataclasses import dataclass
@@ -13,6 +13,7 @@ NET_NAME = re.compile(r"[A-Za-z0-9_]+\Z")
 NUMBER = r"(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?"
 DIMENSION = re.compile(r"(" + NUMBER + r")([unp]?)\Z", re.I)
 MODELS = {"sg13_lv_nmos", "sg13_lv_pmos"}
+SYMBOLS = Path(__file__).resolve().parent / "assets" / "ihp_xschem"
 
 
 @dataclass(frozen=True)
@@ -59,7 +60,7 @@ def _dimension(token, parameter):
 
 
 def parse_cdl(text):
-    """Parse one flat subcircuit with explicit numeric w, l, ng and m=1."""
+    """Parse total-W/ng devices; consume an optional legacy neutral multiplier."""
     name, ports, pininfo = None, (), None
     devices, seen_devices, spellings = [], set(), {}
     ended = False
@@ -112,8 +113,8 @@ def parse_cdl(text):
             else:
                 if name is None or ended:
                     raise ValueError("expected SUBCKT or a comment outside the subcircuit")
-                if head[0] != "m" or not IDENTIFIER.fullmatch(fields[0]) or len(fields) < 10:
-                    raise ValueError("expected a flat MOS device with D G S B model w l ng m")
+                if head[0] != "m" or not IDENTIFIER.fullmatch(fields[0]) or len(fields) < 9:
+                    raise ValueError("expected a flat MOS device with D G S B model w l ng")
                 if head in seen_devices:
                     raise ValueError(f"duplicate device {fields[0]!r}")
                 seen_devices.add(head)
@@ -130,9 +131,9 @@ def parse_cdl(text):
                     if key in attrs:
                         raise ValueError(f"duplicate parameter {key!r}")
                     attrs[key] = value
-                if set(attrs) != {"w", "l", "ng", "m"}:
-                    raise ValueError("explicit total w, l, ng and m=1 are required")
-                if not re.fullmatch(NUMBER, attrs["m"]) or Decimal(attrs["m"]) != 1:
+                if not {"w", "l", "ng"}.issubset(attrs):
+                    raise ValueError("explicit total w, l and ng are required")
+                if "m" in attrs and (not re.fullmatch(NUMBER, attrs["m"]) or Decimal(attrs["m"]) != 1):
                     raise ValueError("m must be 1: provide explicit total W/ng, multiplier conversion is ambiguous")
                 if not re.fullmatch(r"[0-9]+", attrs["ng"]) or int(attrs["ng"]) < 1:
                     raise ValueError("ng must be a positive integer finger count")
@@ -157,7 +158,7 @@ def netlist(circuit, spice=False):
     for device in circuit.devices:
         name = "X" + device.name if spice else device.name
         lines.append(f"{name} {' '.join(device.nets)} {device.model} "
-                     f"w={device.w} l={device.l} ng={device.ng} m=1")
+                     f"w={device.w} l={device.l} ng={device.ng}")
     lines.append(f".ENDS {circuit.name}")
     return "\n".join(lines) + "\n"
 
@@ -236,7 +237,7 @@ def _labelled_schematic(circuit):
                 label(x + 100, y - 40, device.nets[3])
                 components.append(f"C {{{device.model.lower()}.sym}} {x} {y} 0 0 "
                                   f"{{name={device.name} w={device.w} l={device.l} ng={device.ng} "
-                                  f"m=1 model={device.model} spiceprefix=X}}")
+                                  f"model={device.model} spiceprefix=X}}")
                 if (pmos and index == len(stack) - 1) or (not pmos and index == 0):
                     endpoints[row][column] = (x + 20, lower_y if pmos else upper_y, device.nets[0])
     for column, (x, y, name) in endpoints[0].items():
@@ -580,7 +581,7 @@ def _cmos_schematic(circuit):
             wire(x - 100, y, x - 20, y)
             label(x - 100, y, d.nets[1])
         components.append(f'C {{{d.model.lower()}.sym}} {x} {y} 0 0 '
-                          f'{{name={d.name} w={d.w} l={d.l} ng={d.ng} m=1 model={d.model} spiceprefix=X}}')
+                          f'{{name={d.name} w={d.w} l={d.l} ng={d.ng} model={d.model} spiceprefix=X}}')
     anchor = next((inputs.index(p) for p in inputs if p in port_xy), (len(inputs) - 1) / 2)
     for j, p in enumerate(inputs):
         if p not in port_xy:
@@ -605,10 +606,28 @@ def _cmos_schematic(circuit):
 def schematic(circuit):
     """Wire CMOS stages; retain exact labelled terminals for other topologies."""
     try:
-        return _cmos_schematic(circuit)
+        drawing = _cmos_schematic(circuit)
     except _LayoutNotApplicable:
         # Non-CMOS, cyclic or oppositely oriented sources must not be transformed.
-        return _labelled_schematic(circuit)
+        drawing = _labelled_schematic(circuit)
+    # Embed distinct symbol names so upstream defaults cannot restore a multiplier
+    # and the local adaptation cannot replace an unrelated PDK symbol in Xschem.
+    lines, embedded = [], set()
+    for line in drawing.splitlines():
+        match = re.match(r"C \{(sg13_lv_[np]mos)\.sym\}", line)
+        if match is None:
+            lines.append(line)
+            continue
+        model = match[1]
+        filename = f"au_medal_{model}.sym"
+        line = line.replace("{" + model + ".sym}", "{" + filename + "}", 1)
+        if model in embedded:
+            lines.append(line)
+            continue
+        body = (SYMBOLS / filename).read_text(encoding="utf-8")
+        lines.extend([line[:-1] + " embed=true}", "[", body.rstrip("\n"), "]"])
+        embedded.add(model)
+    return "\n".join(lines) + "\n"
 
 
 def symbol(circuit):
@@ -662,10 +681,11 @@ def generate(source, output_dir):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description="Generate CDL/SPI/SCH/SYM from one flat IHP total-W/ng, m=1 CDL.",
-        epilog="Requires explicit numeric w, l, ng and m=1. Bare W/L values use SI metres. "
+        description="Generate multiplier-free CDL/SPI/SCH/SYM from one flat IHP total-W/ng CDL.",
+        epilog="Requires explicit numeric w, l and ng. Legacy neutral m=1 is accepted and omitted. "
+               "Bare W/L values use SI metres. "
                "PININFO I/O/B supplies port directions, otherwise ports are inout. "
-               "Xschem resolves sg13_lv_nmos.sym and sg13_lv_pmos.sym through its IHP library path.",
+               "Multiplier-free adaptations of the IHP transistor symbols are embedded in each SCH.",
         allow_abbrev=False,
     )
     parser.add_argument("source", type=Path, help="source CDL, read only")

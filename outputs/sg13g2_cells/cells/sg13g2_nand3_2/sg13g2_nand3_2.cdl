@@ -1,9 +1,9 @@
 .SUBCKT sg13g2_nand3_2 Y A B C VDD VSS
 *.PININFO A:I B:I C:I Y:O VDD:B VSS:B
-MP0 Y A VDD VDD sg13_lv_pmos m=1 w=2.24u l=130.00n ng=2
-MP1 Y B VDD VDD sg13_lv_pmos m=1 w=2.24u l=130.00n ng=2
-MP2 Y C VDD VDD sg13_lv_pmos m=1 w=2.24u l=130.00n ng=2
-MN1 net2 B net3 VSS sg13_lv_nmos m=1 w=1.48u l=130.00n ng=2
-MN2 net3 C VSS VSS sg13_lv_nmos m=1 w=1.48u l=130.00n ng=2
-MN0 Y A net2 VSS sg13_lv_nmos m=1 w=1.48u l=130.00n ng=2
+MP0 Y A VDD VDD sg13_lv_pmos w=2.24u l=130.00n ng=2
+MP1 Y B VDD VDD sg13_lv_pmos w=2.24u l=130.00n ng=2
+MP2 Y C VDD VDD sg13_lv_pmos w=2.24u l=130.00n ng=2
+MN1 net2 B net3 VSS sg13_lv_nmos w=1.48u l=130.00n ng=2
+MN2 net3 C VSS VSS sg13_lv_nmos w=1.48u l=130.00n ng=2
+MN0 Y A net2 VSS sg13_lv_nmos w=1.48u l=130.00n ng=2
 .ENDS
