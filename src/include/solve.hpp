@@ -21,6 +21,8 @@ struct RoutingResult {
     // Set when some check ran out of time rather than reaching a verdict.
     // Without it a timeout is indistinguishable from a proof of infeasibility.
     bool undecided = false;
+    // A SAT routing candidate failed the post-search geometry checks.
+    bool geometry_unresolved = false;
     std::string top_layer;
     long tolerance = -1;
     std::vector<std::pair<std::array<long, 3>, std::array<long, 3>>> metals;

@@ -1,9 +1,12 @@
 // flow: the routing-only cell-generation CLI.
 #include <cctype>
+#include <cerrno>
+#include <cstdint>
 #include <cstdio>
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <sys/stat.h>
@@ -22,6 +25,97 @@ namespace {
 bool path_exists(const std::string& p) {
     struct stat st;
     return ::stat(p.c_str(), &st) == 0;
+}
+
+// Content identity for local cache invalidation, not an authenticity signature.
+std::string content_id(std::istream& in) {
+    std::uint64_t hash = UINT64_C(14695981039346656037), size = 0;
+    char buf[8192];
+    while (in) {
+        in.read(buf, sizeof buf);
+        const auto n = in.gcount();
+        size += n;
+        for (std::streamsize i = 0; i < n; ++i) {
+            hash ^= static_cast<unsigned char>(buf[i]);
+            hash *= UINT64_C(1099511628211);
+        }
+    }
+    if (in.bad() || !in.eof()) throw std::runtime_error("failed to read cache identity");
+    std::ostringstream out;
+    out << "fnv1a64:" << std::hex << hash << ':' << std::dec << size;
+    return out.str();
+}
+
+std::string json_id(const nlohmann::json& value) {
+    std::istringstream in(value.dump());
+    return content_id(in);
+}
+
+std::string file_id(const std::string& path) {
+    struct stat st;
+    if (::stat(path.c_str(), &st) != 0 || !S_ISREG(st.st_mode) || st.st_size == 0)
+        throw std::runtime_error("cache identity requires a nonempty regular file: " + path);
+    std::ifstream in(path, std::ios::binary);
+    if (!in) throw std::runtime_error("cannot read cache identity: " + path);
+    return content_id(in);
+}
+
+nlohmann::json input_identity(const aumedal::Config& cfg, const aumedal::Circuit& circ,
+                              const std::string& cell_name) {
+    // Fingerprint the values actually parsed, so whitespace and port order do not matter.
+    auto devices = [](const std::vector<aumedal::Mosfet>& fets) {
+        nlohmann::json rows = nlohmann::json::array();
+        for (const auto& f : fets) rows.push_back({f.name, f.drain, f.gate, f.source, f.nfin});
+        return rows;
+    };
+    return {{"cell_name", cell_name}, {"ports", circ.ext_pins},
+            {"config", json_id({cfg.rules, cfg.specs, cfg.option})},
+            {"placement", json_id({devices(circ.nfets), devices(circ.pfets)})}};
+}
+
+nlohmann::json read_cache(const std::string& path) {
+    std::ifstream in(path);
+    if (!in) return nlohmann::json::object();
+    try {
+        nlohmann::json cached;
+        in >> cached;
+        return cached;
+    } catch (const nlohmann::json::exception& e) {
+        std::cerr << "[CACHE] Ignoring unreadable routing cache: " << e.what() << '\n';
+        return nlohmann::json::object();
+    }
+}
+
+bool matching_route(nlohmann::json cached, const nlohmann::json& inputs) {
+    try {
+        const auto meta = cached.at("_cache");
+        cached.erase("_cache");
+        return meta.at("version") == 1 && meta.at("inputs") == inputs &&
+               !meta.at("solver").get<std::string>().empty() &&
+               cached.at("sat") == true && !cached.value("geometry_unresolved", false) &&
+               meta.at("routing") == json_id(cached);
+    } catch (const nlohmann::json::exception&) {
+        return false;
+    }
+}
+
+void publish_cache(const std::string& path, const nlohmann::json& cached) {
+    const std::string pending = path + ".tmp";
+    std::ofstream out;
+    out.exceptions(std::ios::failbit | std::ios::badbit);
+    out.open(pending);
+    out << cached.dump(2);
+    out.close();
+    if (::rename(pending.c_str(), path.c_str()) != 0)
+        throw std::runtime_error("cannot publish routing cache: " + path);
+}
+
+void invalidate_gds_certificate(const std::string& path, nlohmann::json cached) {
+    if (!cached.is_object() || !cached.contains("_cache") || !cached.at("_cache").is_object()) return;
+    // Preserve the expensive solved route for an explicit retry after emitter failure.
+    cached["_cache"].erase("gds");
+    cached["_cache"].erase("emitter");
+    publish_cache(path, cached);
 }
 
 void make_dirs(const std::string& path) {
@@ -72,7 +166,9 @@ struct Logger {
 
 aumedal::RoutingResult route_cell(const aumedal::Config& cfg, const aumedal::Circuit& circ,
                                   const std::string& cell_name, const std::string& gds_out,
-                                  const std::string& routing_cache_path, bool regen_gds_only) {
+                                  const std::string& routing_cache_path, bool regen_gds_only,
+                                  const nlohmann::json& cached, const nlohmann::json& inputs,
+                                  const std::string& producer) {
     const long diff_break = cfg.specs.at("diffusion_break").get<long>();
     aumedal::NetOrders no = aumedal::compute_net_orders(circ.nfets, circ.pfets, diff_break);
     auto yp = aumedal::get_y_points(cfg, cfg.opt_bool("allow_below_min_track"), &no);
@@ -87,23 +183,24 @@ aumedal::RoutingResult route_cell(const aumedal::Config& cfg, const aumedal::Cir
 
     aumedal::RoutingResult r;
     if (regen_gds_only) {
-        std::ifstream cache_in(routing_cache_path);
-        if (!cache_in)
-            throw std::runtime_error("--regen_gds_only: no cached routing result at " + routing_cache_path +
-                                     " (run once without --regen_gds_only first)");
-        nlohmann::json cache_json;
-        cache_in >> cache_json;
-        r = aumedal::routing_result_from_json(cache_json);
-    } else {
-        r = aumedal::solve_router(cfg, circ, no, smt2_default);
-        if (r.sat && !routing_cache_path.empty()) {
-            std::ofstream cache_out(routing_cache_path);
-            cache_out << aumedal::routing_result_to_json(r).dump(2);
-        }
+        r = aumedal::routing_result_from_json(cached);
     }
 
-    if (r.sat && !gds_out.empty())
+    // A failed fresh solve or write must not leave an earlier GDS certified.
+    invalidate_gds_certificate(routing_cache_path, cached);
+    if (!regen_gds_only) r = aumedal::solve_router(cfg, circ, no, smt2_default);
+
+    if (r.sat && !gds_out.empty()) {
         aumedal::write_routing_gds(gds_out, cell_name, cfg, r, pre, no, cnets);
+        auto result = aumedal::routing_result_to_json(r);
+        // Replay may use a rebuilt emitter; it does not certify a solve by the new binary.
+        const std::string solver = regen_gds_only
+            ? cached.at("_cache").at("solver").get<std::string>() : producer;
+        result["_cache"] = {{"version", 1}, {"inputs", inputs}, {"solver", solver},
+                            {"emitter", producer}, {"routing", json_id(result)},
+                            {"gds", file_id(gds_out)}};
+        publish_cache(routing_cache_path, result);
+    }
     return r;
 }
 
@@ -169,14 +266,6 @@ int main(int argc, char** argv) try {
               << "- no_cache: " << (no_cache ? "yes" : "no") << "\n"
               << "- regen_gds_only: " << (regen_gds_only ? "yes" : "no") << "\n";
 
-    const bool cache_hit = (!no_cache) && !regen_gds_only && path_exists(gds_path) && !path_exists(unsat_marker);
-    if (cache_hit) {
-        std::cout << "[FLOW]\n- routing: cache_hit (existing GDS)\n"
-                  << "[RESULT]\n- status: SAT (cached)\n- database_dir: " << database_dir
-                  << "\n- gds_exists: yes (" << gds_path << ")\n";
-        return 0;
-    }
-
     Logger log;
     log.open(log_path);
     log.step("Loading design rules from " + config_path);
@@ -203,6 +292,31 @@ int main(int argc, char** argv) try {
         circ.ext_pins.swap(ports);
     }
     circ.validate_against(cfg);
+    const std::string routing_cache_path = database_dir + "/" + cell_name + ".routing.json";
+    const auto inputs = input_identity(cfg, circ, cell_name);
+    // Linux cache identity uses the running executable rather than argv[0].
+    const std::string producer = file_id("/proc/self/exe");
+    const auto cached = read_cache(routing_cache_path);
+    const bool reusable = matching_route(cached, inputs);
+    if (regen_gds_only && !reusable)
+        throw std::runtime_error("--regen_gds_only: cached routing is missing, unvalidated or incompatible "
+                                 "with config, placement or ports; run without --regen_gds_only first");
+    if (!no_cache && !regen_gds_only && reusable && !path_exists(unsat_marker)) {
+        bool hit = false;
+        try {
+            const auto& meta = cached.at("_cache");
+            hit = meta.at("solver") == producer && meta.at("emitter") == producer &&
+                  meta.at("gds") == file_id(gds_path);
+        } catch (const std::exception& e) {
+            std::cerr << "[CACHE] Ignoring unmatched GDS: " << e.what() << '\n';
+        }
+        if (hit) {
+            std::cout << "[FLOW]\n- routing: cache_hit (matching inputs, producer and GDS)\n"
+                      << "[RESULT]\n- status: SAT (cached)\n- database_dir: " << database_dir
+                      << "\n- gds_exists: yes (" << gds_path << ")\n";
+            return 0;
+        }
+    }
     log.step("Routing-only mode for " + cell_name + " (placement file + routing)");
 
     std::cout << "[FLOW]\n"
@@ -211,8 +325,8 @@ int main(int argc, char** argv) try {
               << "- attempt_tag: input\n";
 
     log.step("Routing search policy + solve");
-    const std::string routing_cache_path = database_dir + "/" + cell_name + ".routing.json";
-    aumedal::RoutingResult r = route_cell(cfg, circ, cell_name, gds_path, routing_cache_path, regen_gds_only);
+    aumedal::RoutingResult r = route_cell(cfg, circ, cell_name, gds_path, routing_cache_path,
+                                        regen_gds_only, cached, inputs, producer);
 
     if (r.sat) {
         if (path_exists(unsat_marker)) ::remove(unsat_marker.c_str());
@@ -229,9 +343,15 @@ int main(int argc, char** argv) try {
     }
 
     if (r.undecided) {
-        log.step("Routing UNDECIDED: the solver timed out before reaching a verdict. "
-                 "No infeasibility marker written.");
-        std::cout << "TIMEOUT\n[RESULT]\n- status: TIMEOUT\n- database_dir: " << database_dir
+        if (::remove(unsat_marker.c_str()) != 0 && errno != ENOENT)
+            throw std::runtime_error("cannot clear stale infeasibility marker: " + unsat_marker);
+        const std::string status = r.geometry_unresolved ? "UNDECIDED" : "TIMEOUT";
+        const std::string reason = r.geometry_unresolved
+            ? "geometry conflicts remain after refinement search exhaustion"
+            : "the solver timed out before reaching a verdict";
+        log.step("Routing " + status + ": " + reason + ". No infeasibility marker written.");
+        std::cout << status << "\n[RESULT]\n- status: " << status << "\n- reason: " << reason
+                  << "\n- database_dir: " << database_dir
                   << "\n- log_file: " << log_path
                   << "\n- unsat_marker_exists: no\n";
         return 1;
