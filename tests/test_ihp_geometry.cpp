@@ -423,6 +423,24 @@ int main(int argc, char** argv) {
         require(pins[1] == Rect{0, 3560, 2400, 4000}, "serialized upper rail extent");
         require(pins[2] == Rect{340, 760, 980, 920} && on_grid(pins[2]), "serialized signal pin geometry");
     });
+    test("writer_builds_pin_without_external_label_hint", [&] {
+        Fixture f(cfg);
+        Net net;
+        net.name = "A";
+        net.is_ext_pin = true;
+        net.pins.push_back({TERM_GATE, {{260, 840, 1}}});
+        f.nets.push_back(net);
+        f.route.metals.push_back({{260, 840, 1}, {260, 840, 2}});
+        f.route.metals.push_back({{260, 840, 2}, {740, 840, 2}});
+        require(f.route.ext_pins.empty(), "fixture must not supply an external label hint");
+        TempDir temp; const auto path = temp.path / "test.gds";
+        write_routing_gds(path.string(), "PIN_FROM_ROUTE", f.cfg, f.route, {}, f.no, f.nets);
+        const auto pins = read_pin_rects(path);
+        require(pins.size() == 3, "missing generated signal Metal1.pin without a label hint");
+        require(on_grid(pins[2]), "generated pin does not hold a routing grid point");
+        require(pins[2][1] <= 840 && 840 <= pins[2][3], "pin is not on its routed M1 wire");
+        require(pins[2][0] < pins[2][2] && pins[2][1] < pins[2][3], "text is not a pin rectangle");
+    });
     test("writer_open_failure", [&] {
         Fixture f(cfg); TempDir temp;
         rejects([&] { write_routing_gds((temp.path / "absent" / "test.gds").string(), "test", cfg, f.route, {}, f.no, {}); }, "open");

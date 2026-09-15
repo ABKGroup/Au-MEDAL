@@ -35,6 +35,7 @@ PIN_BOXES = {
         (17.5, -32.5, 22.5, -27.5), (19.921875, -0.078125, 20.078125, 0.078125),
     ),
 }
+PIN_BOXES.update({"au_medal_" + name: boxes for name, boxes in list(PIN_BOXES.items())})
 
 
 def scalar(token):
@@ -54,7 +55,7 @@ def properties(text):
 
 def device_record(name, nets, model, attrs):
     return (name, tuple(nets), model, scalar(attrs["w"]), scalar(attrs["l"]),
-            scalar(attrs["ng"]), scalar(attrs["m"]))
+            scalar(attrs["ng"]), scalar(attrs.get("m", "1")))
 
 
 def read_netlist(path):
@@ -200,6 +201,43 @@ class IHPViewsTests(unittest.TestCase):
                          {"nand" + ext for ext in (".cdl", ".spi", ".sch", ".sym")})
         self.compare_views(self.source, self.dest)
 
+    def test_multiplier_free_cdl_is_accepted_and_stays_multiplier_free(self):
+        self.source.write_text(NAND.replace("m=1 ", ""), encoding="utf-8")
+        self.successful()
+        self.compare_views(self.source, self.dest)
+        for path in self.dest.iterdir():
+            self.assertNotRegex(path.read_text(), r"(?i)\bm\s*=|@m\b")
+
+    def test_legacy_neutral_multiplier_is_consumed_but_never_authored(self):
+        self.successful()
+        self.compare_views(self.source, self.dest)
+        for path in self.dest.iterdir():
+            self.assertNotRegex(path.read_text(), r"(?i)\bm\s*=|@m\b")
+
+    def test_schematic_embeds_one_no_multiplier_symbol_per_model(self):
+        self.successful()
+        text = (self.dest / "nand.sch").read_text()
+        blocks = re.findall(r"(?ms)^C \{([^}]+)\}[^\n]*embed=true[^\n]*\n\[\n(.*?)^\]$", text)
+        self.assertEqual(len(blocks), 2)
+        self.assertEqual({name for name, _ in blocks},
+                         {"au_medal_sg13_lv_nmos.sym", "au_medal_sg13_lv_pmos.sym"})
+        for _, body in blocks:
+            self.assertIn("IHP PDK Authors", body)
+            self.assertIn("https://www.apache.org/licenses/LICENSE-2.0", body)
+            self.assertIn("Modified", body)
+            self.assertNotRegex(body, r"(?i)\bm\s*=|@m\b")
+            self.assertIn("ng=@ng", body)
+            self.assertIn("w=@w", body)
+            self.assertIn("l=@l", body)
+
+    def test_shipped_views_do_not_reintroduce_multiplier_parameters(self):
+        views = [p for p in (ROOT / "outputs" / "sg13g2_cells").rglob("*")
+                 if p.suffix in {".cdl", ".spi", ".sch"}]
+        self.assertEqual(len(views), 91)
+        for path in views:
+            with self.subTest(view=str(path.relative_to(ROOT))):
+                self.assertNotRegex(path.read_text(), r"(?i)\bm\s*=|@m\b")
+
     def test_cmos_drain_source_networks_are_wired_not_label_only(self):
         sources = sorted(CELLS.glob("*/*.cdl"))
         self.assertEqual(len(sources), 30)
@@ -229,7 +267,7 @@ class IHPViewsTests(unittest.TestCase):
 
     def test_wires_clear_official_attribute_anchor_band(self):
         # IHP symbol anchors: W(31.25,-26.25), L(31.25,-15),
-        # ng(31.25,-2.5), m(31.25,6.25). This is a geometry guard,
+        # ng(31.25,-2.5). This is a geometry guard,
         # not an assertion about native Xschem font bounding boxes.
         for source in sorted(CELLS.glob("*/*.cdl")):
             with self.subTest(cell=source.stem):
@@ -238,7 +276,7 @@ class IHPViewsTests(unittest.TestCase):
                 text = (target / (source.stem + ".sch")).read_text()
                 wires = [tuple(map(float, line.split()[1:5]))
                          for line in text.splitlines() if line.startswith("N ")]
-                for match in re.finditer(r"C \{sg13_lv_[np]mos.sym\} (\S+) (\S+)", text):
+                for match in re.finditer(r"C \{au_medal_sg13_lv_[np]mos.sym\} (\S+) (\S+)", text):
                     x, y = map(float, match.groups())
                     for a, b, c, d in wires:
                         intersects = (max(a, c) >= x + 31.25 and min(a, c) <= x + 80 and
@@ -267,7 +305,7 @@ class IHPViewsTests(unittest.TestCase):
         bad = self.base / "wrong_gate.sch"
         bad.write_text(original.replace("lab=A}", "lab=BAD_GATE}"), encoding="utf-8")
         self.assertNotEqual(read_schematic(bad)[1], read_netlist(self.source)[2])
-        match = re.search(r"C \{sg13_lv_nmos.sym\} (\S+) (\S+)", original)
+        match = re.search(r"C \{au_medal_sg13_lv_nmos.sym\} (\S+) (\S+)", original)
         x, y = map(float, match.groups())
         bad.write_text(original + f"N {x - 20:g} {y:g} {x + 20:g} {y:g} {{}}\n", encoding="utf-8")
         with self.assertRaisesRegex(AssertionError, "Short"):
@@ -278,7 +316,7 @@ class IHPViewsTests(unittest.TestCase):
         sch = self.dest / "nand.sch"
         bad = self.base / "detached.sch"
         text = sch.read_text(encoding="utf-8")
-        text, count = re.subn(r"(C \{sg13_lv_pmos.sym\} )\S+", r"\g<1>98760", text, count=1)
+        text, count = re.subn(r"(C \{au_medal_sg13_lv_pmos.sym\} )\S+", r"\g<1>98760", text, count=1)
         self.assertEqual(count, 1)
         bad.write_text(text, encoding="utf-8")
         self.assertNotEqual(read_schematic(bad)[1], read_netlist(self.source)[2])
@@ -335,7 +373,6 @@ class IHPViewsTests(unittest.TestCase):
     def test_invalid_or_ambiguous_inputs_fail_before_any_output(self):
         variants = {
             "multiplier": NAND.replace("m=1", "m=2", 1),
-            "missing_m": NAND.replace("m=1 ", "", 1),
             "missing_ng": NAND.replace(" ng=4", "", 1),
             "per_finger": NAND.replace("ng=4", "nf=4", 1),
             "expression": NAND.replace("w=4.48u", "w={2.24u*2}", 1),

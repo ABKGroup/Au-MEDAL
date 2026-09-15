@@ -1,5 +1,5 @@
 .SUBCKT sg13g2_inv_32 Y A VDD VSS
 *.PININFO A:I Y:O VDD:B VSS:B
-MN0 Y A VSS VSS sg13_lv_nmos m=1 w=23.68u l=130.00n ng=32
-MP0 Y A VDD VDD sg13_lv_pmos m=1 w=35.84u l=130.00n ng=32
+MN0 Y A VSS VSS sg13_lv_nmos w=23.68u l=130.00n ng=32
+MP0 Y A VDD VDD sg13_lv_pmos w=35.84u l=130.00n ng=32
 .ENDS

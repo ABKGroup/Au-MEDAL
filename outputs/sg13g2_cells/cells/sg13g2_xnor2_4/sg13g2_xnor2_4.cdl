@@ -1,13 +1,13 @@
 .SUBCKT sg13g2_xnor2_4 Y A B VDD VSS
 *.PININFO A:I B:I Y:O VDD:B VSS:B
-MP4 Y net1 VDD VDD sg13_lv_pmos m=1 w=4.48u l=130.00n ng=4
-MP3 Y B net4 VDD sg13_lv_pmos m=1 w=4.48u l=130.00n ng=4
-MP2 net4 A VDD VDD sg13_lv_pmos m=1 w=4.48u l=130.00n ng=4
-MP1 net1 B VDD VDD sg13_lv_pmos m=1 w=840.00n l=130.00n ng=1
-MP0 net1 A VDD VDD sg13_lv_pmos m=1 w=840.00n l=130.00n ng=1
-MN3 Y net1 net3 VSS sg13_lv_nmos m=1 w=2.96u l=130.00n ng=4
-MN1 net2 A VSS VSS sg13_lv_nmos m=1 w=640.00n l=130.00n ng=1
-MN0 net1 B net2 VSS sg13_lv_nmos m=1 w=640.00n l=130.00n ng=1
-MN4 net3 B VSS VSS sg13_lv_nmos m=1 w=2.96u l=130.00n ng=4
-MN2 net3 A VSS VSS sg13_lv_nmos m=1 w=2.96u l=130.00n ng=4
+MP4 Y net1 VDD VDD sg13_lv_pmos w=4.48u l=130.00n ng=4
+MP3 Y B net4 VDD sg13_lv_pmos w=4.48u l=130.00n ng=4
+MP2 net4 A VDD VDD sg13_lv_pmos w=4.48u l=130.00n ng=4
+MP1 net1 B VDD VDD sg13_lv_pmos w=840.00n l=130.00n ng=1
+MP0 net1 A VDD VDD sg13_lv_pmos w=840.00n l=130.00n ng=1
+MN3 Y net1 net3 VSS sg13_lv_nmos w=2.96u l=130.00n ng=4
+MN1 net2 A VSS VSS sg13_lv_nmos w=640.00n l=130.00n ng=1
+MN0 net1 B net2 VSS sg13_lv_nmos w=640.00n l=130.00n ng=1
+MN4 net3 B VSS VSS sg13_lv_nmos w=2.96u l=130.00n ng=4
+MN2 net3 A VSS VSS sg13_lv_nmos w=2.96u l=130.00n ng=4
 .ENDS
