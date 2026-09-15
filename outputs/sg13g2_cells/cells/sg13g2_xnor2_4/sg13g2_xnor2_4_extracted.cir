@@ -1,3 +1,5 @@
+* Extracted by KLayout with SG13G2 LVS runset on : 14/09/2026 22:10
+
 .SUBCKT sg13g2_xnor2_4 VSS A Y B VDD
 M$1 VSS B \$5 VSS sg13_lv_nmos L=0.13u W=2.96u AS=1.0574p AD=0.5772p PS=8.96u
 + PD=4.52u

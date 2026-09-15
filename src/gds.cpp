@@ -11,6 +11,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -826,7 +827,7 @@ void emit_external_label_fallback(const Config& cfg, const std::vector<Net>& net
             if (added) break;
         }
         }
-        // With bulk_planar the pin step moves the label onto the grid afterwards and warns itself if it cannot.
+        // The bulk-planar pin step checks the final pin geometry before writing.
         if (added && used_pass == 1 && pin_grid_active(cfg) && !bulk_planar(cfg))
             std::cerr << "WARNING: label of " << net.name << " has no Metal1 on the grid" << std::endl;
         if (added) continue;
@@ -1402,7 +1403,7 @@ PinExt2 grid_extension2(const Pieces& m1, const std::set<int>& own, long gx, lon
     return best;
 }
 
-// Merged outline of a rectangle set as hole-free polygons, a piece around a hole being cut along the hole's bottom edge.
+// Merged rectangle outlines. Hole-fractured pieces are rejoined by zero-width GDS bridges.
 std::vector<std::vector<Pt>> merged_polygons(const std::vector<IRect>& in) {
     std::vector<std::vector<Pt>> out;
     std::vector<IRect> rs;
@@ -1457,6 +1458,8 @@ std::vector<std::vector<Pt>> merged_polygons(const std::vector<IRect>& in) {
                 ++ncomp;
             }
     };
+    label();
+    const auto original_comp = comp;
     for (int iter = 0; iter < 100000; ++iter) {
         label();
         std::vector<std::array<int, 4>> bb((size_t)ncomp, std::array<int, 4>{{nx, ny, -1, -1}});
@@ -1577,6 +1580,9 @@ std::vector<std::vector<Pt>> merged_polygons(const std::vector<IRect>& in) {
         if (!opened) break;
     }
     label();
+    std::vector<int> source((size_t)ncomp, -1), out_source;
+    for (size_t k = 0; k < comp.size(); ++k)
+        if (comp[k] >= 0) source[(size_t)comp[k]] = original_comp[k];
     std::vector<std::map<Pt, Pt>> nxt((size_t)ncomp);
     std::vector<char> bad((size_t)ncomp, 0);
     auto edge = [&](int c, const Pt& a, const Pt& e) {
@@ -1617,6 +1623,7 @@ std::vector<std::vector<Pt>> merged_polygons(const std::vector<IRect>& in) {
                     int k = j;
                     while (k < ny && comp[at(i, k)] == c) ++k;
                     out.push_back({Pt{{xs[i], ys[j]}}, Pt{{xs[i + 1], ys[j]}}, Pt{{xs[i + 1], ys[k]}}, Pt{{xs[i], ys[k]}}});
+                    out_source.push_back(source[(size_t)c]);
                     j = k;
                 }
             }
@@ -1632,11 +1639,65 @@ std::vector<std::vector<Pt>> merged_polygons(const std::vector<IRect>& in) {
             if (!straight) s.push_back(q);
         }
         out.push_back(s);
+        out_source.push_back(source[(size_t)c]);
+    }
+    // Keep the existing fracture/outline construction. Only stitch pieces belonging
+    // to one pre-cut component, at an oppositely traversed shared edge. Traversing
+    // the two closed outlines at this point adds no area: shared edges cancel,
+    // leaving a GDS keyhole boundary rather than separate touching boundaries.
+    auto closed_at = [](const std::vector<Pt>& poly, const Pt& q) {
+        std::vector<Pt> p = poly;
+        auto it = std::find(p.begin(), p.end(), q);
+        if (it == p.end()) {
+            size_t i = 0;
+            for (; i < p.size(); ++i) {
+                const Pt a = p[i], b = p[(i + 1) % p.size()];
+                if (((a[0] == b[0] && q[0] == a[0]) || (a[1] == b[1] && q[1] == a[1])) &&
+                    q[0] >= std::min(a[0], b[0]) && q[0] <= std::max(a[0], b[0]) &&
+                    q[1] >= std::min(a[1], b[1]) && q[1] <= std::max(a[1], b[1])) break;
+            }
+            if (i == p.size()) throw std::runtime_error("GDS hole bridge is not on its outline");
+            it = p.insert(p.begin() + i + 1, q);
+        }
+        std::rotate(p.begin(), it, p.end());
+        p.push_back(q);
+        return p;
+    };
+    bool joined = true;
+    while (joined) {
+        joined = false;
+        for (size_t a = 0; a < out.size() && !joined; ++a)
+            for (size_t b = a + 1; b < out.size() && !joined; ++b) {
+                if (out_source[a] != out_source[b]) continue;
+                Pt q{};
+                bool shared = false;
+                for (size_t i = 0; i < out[a].size() && !shared; ++i)
+                    for (size_t j = 0; j < out[b].size() && !shared; ++j) {
+                        const Pt u = out[a][i], v = out[a][(i + 1) % out[a].size()];
+                        const Pt w = out[b][j], z = out[b][(j + 1) % out[b].size()];
+                        for (int axis = 0; axis < 2 && !shared; ++axis) {
+                            const int other = 1 - axis;
+                            const long lo = std::max(std::min(u[axis], v[axis]), std::min(w[axis], z[axis]));
+                            const long hi = std::min(std::max(u[axis], v[axis]), std::max(w[axis], z[axis]));
+                            if (u[other] == v[other] && w[other] == z[other] && u[other] == w[other] &&
+                                lo < hi && (u[axis] < v[axis]) != (w[axis] < z[axis])) {
+                                q[axis] = lo; q[other] = u[other]; shared = true;
+                            }
+                        }
+                    }
+                if (!shared) continue;
+                auto first = closed_at(out[a], q), second = closed_at(out[b], q);
+                first.insert(first.end(), second.begin() + 1, second.end() - 1);
+                out[a] = std::move(first);
+                out.erase(out.begin() + b);
+                out_source.erase(out_source.begin() + b);
+                joined = true;
+            }
     }
     return out;
 }
 
-// Writes every layer as merged hole-free polygons.
+// Writes every layer as merged polygons, with zero-width bridges for holes.
 void write_merged_boundaries(std::ofstream& f, const std::map<int, std::vector<Rect>>& rects,
                              double dbu_scale, int boundary_gds_layer) {
     for (const auto& kv : rects) {
@@ -1864,12 +1925,22 @@ void apply_ihp_feedback(const Config& cfg, const RoutingResult& res, const std::
         return ir_covered(s, act) && !over(s, poly.r);
     };
 
+    auto sd_pair = [&](const IRect& c0, int own) {
+        for (const IRect& c : conts) {
+            if (c == c0 || on_rail(c) || !over(c, act) || ir_gap(c0, c) < (double)cont_space) continue;
+            if (m1.at(cx_of(c), cy_of(c)) != own) continue;
+            const IRect span = ir_hull(c0, c);
+            if (ir_covered(span, act) && !over(span, poly.r)) return true;
+        }
+        return false;
+    };
+
     // Source and drain contacts become a pair on the same diffusion, then more while they fit.
     for (const IRect& c0 : original) {
         if (on_rail(c0) || !over(c0, act)) continue;
         const long x = cx_of(c0), y = cy_of(c0);
         const int own = m1.at(x, y);
-        if (own < 0) continue;
+        if (own < 0 || sd_pair(c0, own)) continue;
         bool placed = false;
         long lo = y, hi = y;
         for (long k = 0; k <= half && !placed; k += 5) {
@@ -1889,7 +1960,25 @@ void apply_ihp_feedback(const Config& cfg, const RoutingResult& res, const std::
                 placed = true;
             }
         }
-        if (!placed) continue;
+        if (!placed) {
+            // Try the same pair horizontally only after the vertical candidates fail.
+            for (long k = 0; k <= half && !placed; k += 5) {
+                for (int sg = 1; sg >= -1 && !placed; sg -= 2) {
+                    if (k == 0 && sg < 0) continue;
+                    const long x0 = x + sg * k - half, x1 = x + sg * k + half;
+                    if (!sd_ok(x0, y, &c0) || !sd_ok(x1, y, &c0)) continue;
+                    const IRect span = ir_hull(box_at(x0, y), box_at(x1, y));
+                    if (!ir_covered(span, act) || over(span, poly.r)) continue;
+                    if (!m1_try(ir_grow(span, enc), own)) continue;
+                    auto it = std::find(conts.begin(), conts.end(), c0);
+                    if (it != conts.end()) conts.erase(it);
+                    conts.push_back(box_at(x0, y));
+                    conts.push_back(box_at(x1, y));
+                    placed = true;
+                }
+            }
+            continue;
+        }
         for (int dir = 1; dir >= -1; dir -= 2) {
             for (int guard = 0; guard < 8; ++guard) {
                 const long yn = (dir > 0) ? hi + pitch : lo - pitch;
@@ -1945,12 +2034,20 @@ void apply_ihp_feedback(const Config& cfg, const RoutingResult& res, const std::
         return true;
     };
 
+    auto gate_pair = [&](const IRect& c0, int own_m, int own_p) {
+        for (const IRect& c : conts) {
+            if (c == c0 || on_rail(c) || over(c, act) || ir_gap(c0, c) < (double)cont_space) continue;
+            if (m1.at(cx_of(c), cy_of(c)) == own_m && poly.at(cx_of(c), cy_of(c)) == own_p) return true;
+        }
+        return false;
+    };
+
     // A gate contact gets a second one on the next finger of the same gate or beside it on its own poly.
     for (const IRect& c0 : original) {
         if (on_rail(c0) || over(c0, act) || !over(c0, poly.r)) continue;
         const long x = cx_of(c0), y = cy_of(c0);
         const int own_m = m1.at(x, y), own_p = poly.at(x, y);
-        if (own_m < 0 || own_p < 0) continue;
+        if (own_m < 0 || own_p < 0 || gate_pair(c0, own_m, own_p)) continue;
         const IRect pad0 = ir_grow(c0, gate_enc);
         bool done = false;
         const long keep[6][2] = {{gp, 0}, {-gp, 0}, {0, pitch}, {0, -pitch}, {pitch, 0}, {-pitch, 0}};
@@ -1966,22 +2063,25 @@ void apply_ihp_feedback(const Config& cfg, const RoutingResult& res, const std::
             conts.push_back(box_at(xn, yn));
             done = true;
         }
-        for (long k = 0; k < half && !done; k += 5) {
-            for (int sg = 1; sg >= -1 && !done; sg -= 2) {
-                if (k == 0 && sg < 0) continue;
-                const long s = sg * k;
-                const long y0 = y + s - half, y1 = y + s + half;
-                if (!gate_cont_ok(x, y0, &c0) || !gate_cont_ok(x, y1, &c0)) continue;
-                const IRect pad{{x - hw - gate_enc, y0 - hw - gate_enc, x + hw + gate_enc, y1 + hw + gate_enc}};
-                if (!poly_ok(pad, own_p)) continue;
-                const IRect bar = bar_of(x, y0, y1);
-                if (!m1_try(bar, own_m)) continue;
-                poly.add(pad, own_p);
-                auto it = std::find(conts.begin(), conts.end(), c0);
-                if (it != conts.end()) conts.erase(it);
-                conts.push_back(box_at(x, y0));
-                conts.push_back(box_at(x, y1));
-                done = true;
+        for (int axis = 1; axis >= 0 && !done; --axis) {
+            for (long k = 0; k < half && !done; k += 5) {
+                for (int sg = 1; sg >= -1 && !done; sg -= 2) {
+                    if (k == 0 && sg < 0) continue;
+                    const long s = sg * k;
+                    const long x0 = axis ? x : x + s - half, x1 = axis ? x : x + s + half;
+                    const long y0 = axis ? y + s - half : y, y1 = axis ? y + s + half : y;
+                    if (!gate_cont_ok(x0, y0, &c0) || !gate_cont_ok(x1, y1, &c0)) continue;
+                    const IRect span = ir_hull(box_at(x0, y0), box_at(x1, y1));
+                    const IRect pad = ir_grow(span, gate_enc);
+                    if (!poly_ok(pad, own_p)) continue;
+                    if (!m1_try(ir_grow(span, enc), own_m)) continue;
+                    poly.add(pad, own_p);
+                    auto it = std::find(conts.begin(), conts.end(), c0);
+                    if (it != conts.end()) conts.erase(it);
+                    conts.push_back(box_at(x0, y0));
+                    conts.push_back(box_at(x1, y1));
+                    done = true;
+                }
             }
         }
     }
@@ -2032,12 +2132,16 @@ void apply_ihp_feedback(const Config& cfg, const RoutingResult& res, const std::
     }
     const long gx = cfg.opt_long("pin_grid_x", 480), gy = cfg.opt_long("pin_grid_y", 420);
     const long cap = cfg.width("M1") / 2;
+    const size_t signal_count = std::count_if(nets.begin(), nets.end(),
+        [](const Net& net) { return net.is_ext_pin && !net.is_power; });
+    if (signal_count > 0 && (gx <= 0 || gy <= 0))
+        throw std::runtime_error("IHP signal pins require a positive routing grid");
     for (const Net& net : nets) {
         if (!net.is_ext_pin || net.is_power) continue;
         GdsLabel* lab = nullptr;
         for (GdsLabel& l : labels)
             if (l.text == net.name && l.layer == gl_m1) { lab = &l; break; }
-        if (lab == nullptr) { std::cerr << "WARNING: no Metal1 label for port " << net.name << std::endl; continue; }
+        if (lab == nullptr) throw std::runtime_error("No Metal1 label for required port " + net.name);
         const long lx = std::lround(lab->x), ly = std::lround(lab->y);
         std::set<int> pieces;
         const int p0 = m1.at(lx, ly);
@@ -2105,20 +2209,54 @@ void apply_ihp_feedback(const Config& cfg, const RoutingResult& res, const std::
                 }
             }
         }
-        if (!best.found) {
-            std::cerr << "WARNING: no Metal1 of port " << net.name << " holds a routing grid point" << std::endl;
-            if (p0 >= 0) {
-                std::vector<IRect> rs;
-                for (size_t i = 0; i < m1.r.size(); ++i)
-                    if (m1.comp[i] == p0) rs.push_back(m1.r[i]);
-                best = best_rect(rs, gx, gy, true, lx, ly, cap);
-            }
-        }
-        if (!best.found) { std::cerr << "WARNING: no Metal1 under port " << net.name << std::endl; continue; }
+        if (!best.found)
+            throw std::runtime_error("No Metal1 of required port " + net.name + " holds a routing grid point");
         m1_pin_rects.push_back(to_rect(best.r));
         lab->x = (double)(((best.r[0] + best.r[2]) / 2) / 5 * 5);
         lab->y = (double)(((best.r[1] + best.r[3]) / 2) / 5 * 5);
     }
+    if (m1_pin_rects.size() != signal_count + 2)
+        throw std::runtime_error("IHP required signal pin count mismatch");
+    for (size_t i = 2; i < m1_pin_rects.size(); ++i) {
+        const IRect pin = to_irect(m1_pin_rects[i]);
+        if (pin[0] >= pin[2] || pin[1] >= pin[3] || !ir_covered(pin, m1.r) ||
+            first_mult(pin[0], gx) > pin[2] || first_mult(pin[1], gy) > pin[3])
+            throw std::runtime_error("IHP signal pin coverage or routing grid invariant failed");
+    }
+
+    // Enclosure counts final contacts, pair counts original non-rail sites, reasons count unmet checks.
+    m1.relabel();
+    poly.relabel();
+    size_t enc_unmet = 0, sd_unmet = 0, gate_unmet = 0, no_m1 = 0;
+    for (const IRect& c : conts) {
+        if (ir_covered(ir_grow(c, enc), m1.r)) continue;
+        ++enc_unmet;
+        if (m1.at(cx_of(c), cy_of(c)) < 0) ++no_m1;
+    }
+    for (const IRect& c0 : original) {
+        if (on_rail(c0)) continue;
+        const int own_m = m1.at(cx_of(c0), cy_of(c0));
+        size_t count = 0;
+        const bool sd = over(c0, act);
+        const int own_p = poly.at(cx_of(c0), cy_of(c0));
+        if (!sd && own_p < 0) continue;
+        for (const IRect& c : conts) {
+            if (on_rail(c) || own_m < 0 || m1.at(cx_of(c), cy_of(c)) != own_m) continue;
+            const IRect span = ir_hull(c0, c);
+            if (sd ? (over(c, act) && ir_covered(span, act) && !over(span, poly.r))
+                   : (!over(c, act) && poly.at(cx_of(c), cy_of(c)) == own_p)) ++count;
+        }
+        if (count < 2) {
+            if (sd) ++sd_unmet;
+            else ++gate_unmet;
+            if (own_m < 0) ++no_m1;
+        }
+    }
+    if (enc_unmet || sd_unmet || gate_unmet)
+        std::cerr << "IHP optional feedback: m1_enclosure_unmet=" << enc_unmet
+                  << " sd_unmet=" << sd_unmet << " gate_unmet=" << gate_unmet
+                  << " unmet_checks(missing_metal1=" << no_m1
+                  << ",no_candidate_in_search=" << enc_unmet + sd_unmet + gate_unmet - no_m1 << ")" << std::endl;
 }
 
 }
@@ -2359,6 +2497,7 @@ void write_routing_gds(const std::string& path, const std::string& cell_name, co
     if (bulk_planar(cfg)) apply_ihp_feedback(cfg, res, nets, no, rects, labels, m1_pin_rects);
 
     std::ofstream f(path, std::ios::binary);
+    if (!f.is_open()) throw std::runtime_error("Cannot open GDS output: " + path);
     write_gds_header(f, cell_name, cfg);
     const double dbu_scale = 1.0 / cfg.gds_database_unit_nm;
     if (bulk_planar(cfg)) {
@@ -2370,6 +2509,10 @@ void write_routing_gds(const std::string& path, const std::string& cell_name, co
     write_label_records(f, labels, dbu_scale);
     record(f, GDS_ENDSTR, {});
     record(f, GDS_ENDLIB, {});
+    f.flush();
+    if (!f) throw std::runtime_error("Cannot write GDS output: " + path);
+    f.close();
+    if (f.fail()) throw std::runtime_error("Cannot close GDS output: " + path);
 }
 
 }

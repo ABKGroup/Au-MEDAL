@@ -30,6 +30,8 @@ namespace aumedal {
 nlohmann::json routing_result_to_json(const RoutingResult& r) {
     nlohmann::json j;
     j["sat"] = r.sat;
+    j["undecided"] = r.undecided;
+    j["geometry_unresolved"] = r.geometry_unresolved;
     j["top_layer"] = r.top_layer;
     j["tolerance"] = r.tolerance;
     j["via_count"] = r.via_count;
@@ -55,6 +57,8 @@ nlohmann::json routing_result_to_json(const RoutingResult& r) {
 RoutingResult routing_result_from_json(const nlohmann::json& j) {
     RoutingResult r;
     r.sat = j.value("sat", false);
+    r.undecided = j.value("undecided", false);
+    r.geometry_unresolved = j.value("geometry_unresolved", false);
     r.top_layer = j.value("top_layer", std::string());
     r.tolerance = j.value("tolerance", -1L);
     r.via_count = j.value("via_count", 0L);
@@ -1714,6 +1718,7 @@ RoutingResult solve_router(const Config& cfg, const Circuit& circ, const NetOrde
 
     RoutingResult last;
     bool any_undecided = false;
+    bool any_geometry_unresolved = false;
     for (const std::string& top : candidates) {
         Config cfg_t = cfg;
         auto it = std::find(cfg_t.routing_layers.begin(), cfg_t.routing_layers.end(), top);
@@ -1835,8 +1840,17 @@ RoutingResult solve_router(const Config& cfg, const Circuit& circ, const NetOrde
         }
         if (r.undecided) any_undecided = true;
         if (have_best) r = best_r;
+        if (have_best && best_total != 0) {
+            std::cerr << "[GEOMETRY_UNRESOLVED] top_layer=" << top
+                      << " conflicts=" << best_total << std::endl;
+            r.sat = false;
+            // A bounded refinement search is not a proof of infeasibility.
+            any_undecided = true;
+            any_geometry_unresolved = true;
+        }
         r.top_layer = top;
         r.undecided = any_undecided;
+        r.geometry_unresolved = !r.sat && any_geometry_unresolved;
         if (r.sat) return r;
         last = r;
         last.top_layer = top;
